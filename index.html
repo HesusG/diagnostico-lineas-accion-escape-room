@@ -25,6 +25,32 @@
         </div>
     </div>
 
+    <!-- Pantalla de Selección de Personaje -->
+    <div id="character-select-screen" class="screen hidden">
+        <div class="character-select-content">
+            <h1>Crea tu Analista</h1>
+            <p class="subtitle">Elige tu avatar y escribe tu nombre</p>
+
+            <div class="character-options">
+                <div class="character-option selected" data-gender="male">
+                    <img src="images/player/personaje_hombre.png" alt="Personaje Masculino">
+                    <span>Analista</span>
+                </div>
+                <div class="character-option" data-gender="female">
+                    <img src="images/player/personaje_mujer.png" alt="Personaje Femenino">
+                    <span>Analista</span>
+                </div>
+            </div>
+
+            <div class="name-input-container">
+                <label for="player-name">Tu nombre:</label>
+                <input type="text" id="player-name" placeholder="Escribe tu nombre" maxlength="20" autocomplete="off">
+            </div>
+
+            <button id="confirm-character-btn" class="btn-primary">Confirmar</button>
+        </div>
+    </div>
+
     <!-- Pantalla de Inicio -->
     <div id="start-screen" class="screen hidden">
         <div class="start-content-wide">
@@ -57,7 +83,7 @@
             </div>
             <div class="start-right">
                 <div class="start-image-placeholder">
-                    <img src="images/start-screen.png" alt="Conde Von Donativo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <img src="images/ui/conde_start.png" alt="Conde Von Donativo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="image-placeholder-text">
                         <span>🏰</span>
                         <p>Imagen del Conde</p>
@@ -97,7 +123,10 @@
             <div id="room">
                 <!-- Objetos de la habitación se generan dinámicamente -->
             </div>
-            <div id="player">🧑‍💼</div>
+            <div id="player">
+                <img id="player-sprite" src="images/player/personaje_hombre.png" alt="Player" onerror="this.style.display='none'; this.parentElement.querySelector('.player-emoji').style.display='block';">
+                <span class="player-emoji" style="display:none;">🧑‍💼</span>
+            </div>
         </div>
 
         <!-- Inventario -->

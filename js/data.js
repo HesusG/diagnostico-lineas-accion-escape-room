@@ -618,6 +618,19 @@ const FURNITURE_IMAGES = {
 };
 
 // ============================================
+// MAPEO DE NPC IDs A IMÁGENES
+// ============================================
+const NPC_IMAGES = {
+    'mayordomo': 'images/npcs/mayordomo.png',
+    'cientifica': 'images/npcs/cientifica.png',
+    'ejecutiva': 'images/npcs/ejecutiva.png',
+    'bibliotecario': 'images/npcs/bibliotecario.png',
+    'detective': 'images/npcs/detective.png',
+    'curadora': 'images/npcs/curadora.png',
+    'conde': 'images/npcs/conde.png'
+};
+
+// ============================================
 // SISTEMA DE PROGRESIÓN DE NPCs
 // ============================================
 const NPC_PROGRESSION = {

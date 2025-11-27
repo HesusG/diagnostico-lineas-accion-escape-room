@@ -10,6 +10,12 @@ const Game = {
     gameLoopId: null,
     mayordomoGreeted: false,
 
+    // Información del jugador
+    playerInfo: {
+        name: 'Analista',
+        gender: 'male'  // 'male' o 'female'
+    },
+
     // Sistema de progresión de NPCs
     npcProgress: {
         visited: new Set(),         // NPCs visitados correctamente
@@ -72,6 +78,63 @@ const Game = {
                 if (e.key === 'Enter') this.checkPassword();
             });
         }
+
+        // Selección de personaje
+        this.setupCharacterSelection();
+    },
+
+    // Configurar selección de personaje
+    setupCharacterSelection() {
+        const characterOptions = document.querySelectorAll('.character-option');
+        const confirmBtn = document.getElementById('confirm-character-btn');
+        const nameInput = document.getElementById('player-name');
+
+        // Selección de género
+        characterOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                characterOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                this.playerInfo.gender = option.dataset.gender;
+            });
+        });
+
+        // Botón confirmar
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => this.confirmCharacter());
+        }
+
+        // Enter en input de nombre
+        if (nameInput) {
+            nameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.confirmCharacter();
+            });
+        }
+    },
+
+    // Confirmar selección de personaje
+    confirmCharacter() {
+        const nameInput = document.getElementById('player-name');
+        const playerName = nameInput ? nameInput.value.trim() : '';
+
+        // Guardar nombre (usar default si está vacío)
+        this.playerInfo.name = playerName || 'Analista';
+
+        // Actualizar sprite del jugador
+        this.updatePlayerSprite();
+
+        // Ir a pantalla de inicio
+        this.showScreen('start-screen');
+    },
+
+    // Actualizar sprite del jugador según selección
+    updatePlayerSprite() {
+        const playerSprite = document.getElementById('player-sprite');
+        if (playerSprite) {
+            const spritePath = this.playerInfo.gender === 'female'
+                ? 'images/player/personaje_mujer.png'
+                : 'images/player/personaje_hombre.png';
+            playerSprite.src = spritePath;
+        }
     },
 
     // Verificar contraseña
@@ -80,7 +143,7 @@ const Game = {
         const errorMsg = document.getElementById('login-error');
 
         if (input.value === 'Teleton25') {
-            this.showScreen('start-screen');
+            this.showScreen('character-select-screen');
             // Reproducir sonido de éxito si es posible (aunque el audio requiere interacción previa)
         } else {
             errorMsg.classList.remove('hidden');

@@ -195,7 +195,24 @@ const RoomManager = {
             const npcElement = document.createElement('div');
             npcElement.className = 'npc';
             npcElement.id = `npc-${npc.id}`;
-            npcElement.textContent = npc.icon;
+
+            // Usar imagen si existe, sino emoji
+            const imagePath = NPC_IMAGES && NPC_IMAGES[npc.id];
+            if (imagePath) {
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = npc.name;
+                img.className = 'npc-sprite';
+                img.onerror = () => {
+                    // Fallback a emoji si la imagen no carga
+                    img.remove();
+                    npcElement.textContent = npc.icon;
+                };
+                npcElement.appendChild(img);
+            } else {
+                npcElement.textContent = npc.icon;
+            }
+
             npcElement.style.left = `${npc.position.x}px`;
             npcElement.style.top = `${npc.position.y}px`;
 

@@ -164,6 +164,50 @@ const Player = {
 
         // Verificar puertas
         this.checkDoors();
+
+        // Verificar proximidad a objetos y NPCs
+        this.checkProximity();
+    },
+
+    // Verificar proximidad a objetos y NPCs para mostrar hints
+    checkProximity() {
+        const playerCenter = {
+            x: this.x + this.width / 2,
+            y: this.y + this.height / 2
+        };
+
+        const interactionDistance = GAME_CONSTANTS.INTERACTION_DISTANCE;
+
+        // Quitar clase nearby de todos los elementos
+        document.querySelectorAll('.room-object.nearby, .npc.nearby').forEach(el => {
+            el.classList.remove('nearby');
+        });
+
+        // Verificar objetos
+        document.querySelectorAll('.room-object').forEach(obj => {
+            const rect = obj.getBoundingClientRect();
+            const roomRect = document.getElementById('room').getBoundingClientRect();
+            const objX = rect.left - roomRect.left + rect.width / 2;
+            const objY = rect.top - roomRect.top + rect.height / 2;
+
+            const dist = this.getDistance(playerCenter, { x: objX, y: objY });
+            if (dist <= interactionDistance) {
+                obj.classList.add('nearby');
+            }
+        });
+
+        // Verificar NPCs
+        document.querySelectorAll('.npc').forEach(npc => {
+            const rect = npc.getBoundingClientRect();
+            const roomRect = document.getElementById('room').getBoundingClientRect();
+            const npcX = rect.left - roomRect.left + rect.width / 2;
+            const npcY = rect.top - roomRect.top + rect.height / 2;
+
+            const dist = this.getDistance(playerCenter, { x: npcX, y: npcY });
+            if (dist <= interactionDistance) {
+                npc.classList.add('nearby');
+            }
+        });
     },
 
     // Verificar colisión entre dos cajas
@@ -404,5 +448,11 @@ const Player = {
             right: false,
             interact: false
         };
+        // Re-acquire DOM element in case it was not available during init
+        this.element = document.getElementById('player');
+        // Set initial position
+        this.x = 384;
+        this.y = 300;
+        this.updatePosition();
     }
 };
