@@ -10,7 +10,8 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
     background-color: #1a1a2e;
     color: #eee;
     min-height: 100vh;
@@ -103,15 +104,33 @@ body {
 }
 
 @keyframes glitch {
-    0% { text-shadow: 2px 2px 0px #ff0000; }
-    50% { text-shadow: -2px -2px 0px #00ff00; }
-    100% { text-shadow: 2px 2px 0px #ff0000; }
+    0% {
+        text-shadow: 2px 2px 0px #ff0000;
+    }
+
+    50% {
+        text-shadow: -2px -2px 0px #00ff00;
+    }
+
+    100% {
+        text-shadow: 2px 2px 0px #ff0000;
+    }
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
 }
 
 /* ============================================
@@ -119,6 +138,35 @@ body {
    ============================================ */
 #start-screen {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    image-rendering: pixelated;
+}
+
+#login-screen {
+    background: #000;
+    font-family: 'VT323', monospace;
+}
+
+.login-content h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.5rem;
+    line-height: 1.5;
+}
+
+#password-input {
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    border: 4px solid #4ecca3;
+    border-radius: 0;
+    box-shadow: 4px 4px 0px #2a6b55;
+}
+
+.start-content h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.8rem;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    color: #e94560;
+    text-shadow: 4px 4px 0px #000;
 }
 
 .start-content {
@@ -131,11 +179,11 @@ body {
     font-size: 2.5rem;
     margin-bottom: 30px;
     color: #e94560;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .narrative {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
@@ -164,7 +212,7 @@ body {
 }
 
 .controls-info {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 20px;
@@ -199,15 +247,22 @@ kbd {
    BUTTONS
    ============================================ */
 .btn-primary {
-    background: linear-gradient(135deg, #e94560, #c73e54);
+    background: #e94560;
     color: white;
-    border: none;
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    border-radius: 30px;
+    border: 4px solid #fff;
+    padding: 15px 30px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    border-radius: 0;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    transition: all 0.1s;
+    box-shadow: 6px 6px 0px #000;
+    text-transform: uppercase;
+}
+
+.btn-primary:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 4px 4px 0px #000;
 }
 
 .btn-primary:hover {
@@ -216,14 +271,18 @@ kbd {
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #4ecca3, #3db892);
-    color: white;
-    border: none;
-    padding: 10px 25px;
-    font-size: 1rem;
-    border-radius: 20px;
+    background: #4ecca3;
+    color: #000;
+    border: 4px solid #fff;
+    padding: 10px 20px;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    border-radius: 0;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.1s;
+    box-shadow: 4px 4px 0px #000;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
 .btn-success:hover {
@@ -232,18 +291,20 @@ kbd {
 }
 
 .btn-secondary {
-    background: rgba(255,255,255,0.1);
+    background: #333;
     color: white;
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 10px 25px;
-    font-size: 1rem;
-    border-radius: 20px;
+    border: 4px solid #555;
+    padding: 10px 20px;
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    border-radius: 0;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.1s;
+    box-shadow: 4px 4px 0px #000;
 }
 
 .btn-secondary:hover {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .btn-icon {
@@ -275,13 +336,15 @@ kbd {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 10px 10px 0 0;
-    border: 2px solid #333;
+    background: #111;
+    border: 4px solid #333;
     border-bottom: none;
+    font-family: 'VT323', monospace;
 }
 
-.hud-left, .hud-center, .hud-right {
+.hud-left,
+.hud-center,
+.hud-right {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -304,8 +367,15 @@ kbd {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
 }
 
 #location {
@@ -326,8 +396,10 @@ kbd {
     width: 800px;
     height: 500px;
     position: relative;
-    border: 2px solid #333;
+    border: 4px solid #333;
     overflow: hidden;
+    background-color: #000;
+    image-rendering: pixelated;
 }
 
 #room {
@@ -373,7 +445,7 @@ kbd {
     line-height: 1;
     z-index: 50;
     transition: none;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
 }
 
 /* Room Objects */
@@ -382,7 +454,7 @@ kbd {
     font-size: 28px;
     cursor: pointer;
     transition: transform 0.2s, filter 0.2s;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
 }
 
 .room-object:hover {
@@ -403,8 +475,15 @@ kbd {
 }
 
 @keyframes glow-green {
-    0%, 100% { filter: drop-shadow(0 0 5px rgba(78, 204, 163, 0.5)); }
-    50% { filter: drop-shadow(0 0 15px rgba(78, 204, 163, 0.8)); }
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 5px rgba(78, 204, 163, 0.5));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 15px rgba(78, 204, 163, 0.8));
+    }
 }
 
 /* NPCs */
@@ -412,13 +491,20 @@ kbd {
     position: absolute;
     font-size: 36px;
     z-index: 40;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
     animation: npc-idle 3s ease-in-out infinite;
 }
 
 @keyframes npc-idle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
 }
 
 /* Doors */
@@ -461,9 +547,8 @@ kbd {
 #inventory {
     width: 800px;
     padding: 10px 20px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 0 0 10px 10px;
-    border: 2px solid #333;
+    background: #111;
+    border: 4px solid #333;
     border-top: none;
 }
 
@@ -500,7 +585,7 @@ kbd {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -512,9 +597,10 @@ kbd {
 }
 
 .modal-content {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    border: 2px solid #4ecca3;
-    border-radius: 15px;
+    background: #1a1a2e;
+    border: 4px solid #4ecca3;
+    border-radius: 0;
+    box-shadow: 10px 10px 0px #000;
     padding: 30px;
     max-width: 500px;
     max-height: 80vh;
@@ -527,6 +613,7 @@ kbd {
         opacity: 0;
         transform: scale(0.9);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -539,7 +626,7 @@ kbd {
     gap: 15px;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #modal-icon {
@@ -660,11 +747,11 @@ kbd {
 
 .conde-icon {
     font-size: 4rem;
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
 }
 
 .speech-bubble {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     padding: 20px;
     text-align: left;
@@ -678,7 +765,7 @@ kbd {
     left: -10px;
     top: 20px;
     border: 10px solid transparent;
-    border-right-color: rgba(255,255,255,0.1);
+    border-right-color: rgba(255, 255, 255, 0.1);
     border-left: 0;
 }
 
@@ -697,7 +784,7 @@ kbd {
 }
 
 .stats {
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 20px;
@@ -716,7 +803,7 @@ kbd {
     bottom: -25px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
     padding: 3px 8px;
     border-radius: 3px;
     font-size: 0.7rem;
