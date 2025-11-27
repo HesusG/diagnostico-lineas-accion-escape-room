@@ -756,20 +756,20 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/vestibulo.png',
         doors: {
-            north: null,
-            south: 'archivo',
+            north: 'pasillo',
+            south: null,
             east: null,
             west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 }
+            north: { x: 384, y: 0, width: 80, height: 40 }
         },
         walls: [
-            { x: 0, y: 0, width: 800, height: 40 },
+            { x: 0, y: 0, width: 350, height: 40 },
+            { x: 450, y: 0, width: 350, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 350, height: 40 },
-            { x: 450, y: 460, width: 350, height: 40 }
+            { x: 0, y: 460, width: 800, height: 40 }
         ],
         furniture: [
             { icon: '🪴', x: 60, y: 60 },
@@ -777,7 +777,11 @@ const ROOMS = {
             { icon: '🛋️', x: 200, y: 200 },
             { icon: '🕯️', x: 60, y: 200 },
             { icon: '🕯️', x: 700, y: 200 },
-            { icon: '🏰', x: 380, y: 50 }
+            { icon: '🏰', x: 380, y: 50 },
+            { icon: '🛡️', x: 300, y: 50 },
+            { icon: '🛡️', x: 460, y: 50 },
+            { icon: '🏺', x: 100, y: 400 },
+            { icon: '🏺', x: 660, y: 400 }
         ],
         spawnPoint: { x: 384, y: 300 },
         isDeliveryRoom: true
@@ -790,23 +794,19 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/archivo.png',
         doors: {
-            north: 'vestibulo',
+            north: 'pasillo',
             south: null,
-            east: 'laboratorio',
-            west: 'galeria'
+            east: null,
+            west: null
         },
         doorPositions: {
-            north: { x: 384, y: 0, width: 80, height: 40 },
-            east: { x: 760, y: 230, width: 40, height: 80 },
-            west: { x: 0, y: 230, width: 40, height: 80 }
+            north: { x: 384, y: 0, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 350, height: 40 },
             { x: 450, y: 0, width: 350, height: 40 },
-            { x: 0, y: 0, width: 40, height: 230 },
-            { x: 0, y: 310, width: 40, height: 190 },
-            { x: 760, y: 0, width: 40, height: 230 },
-            { x: 760, y: 310, width: 40, height: 190 },
+            { x: 0, y: 0, width: 40, height: 500 },
+            { x: 760, y: 0, width: 40, height: 500 },
             { x: 0, y: 460, width: 800, height: 40 }
         ],
         furniture: [
@@ -814,7 +814,11 @@ const ROOMS = {
             { icon: '🗄️', x: 150, y: 100 },
             { icon: '🗄️', x: 600, y: 100 },
             { icon: '🗄️', x: 650, y: 100 },
-            { icon: '🕯️', x: 400, y: 400 }
+            { icon: '🕯️', x: 400, y: 400 },
+            { icon: '🕸️', x: 50, y: 50 },
+            { icon: '📦', x: 100, y: 400 },
+            { icon: '📦', x: 650, y: 400 },
+            { icon: '📜', x: 380, y: 200 }
         ],
         spawnPoint: { x: 384, y: 80 }
     },
@@ -826,20 +830,18 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/laboratorio.png',
         doors: {
-            north: 'oficina',
+            north: 'pasillo',
             south: null,
             east: null,
-            west: 'archivo'
+            west: null
         },
         doorPositions: {
-            north: { x: 384, y: 0, width: 80, height: 40 },
-            west: { x: 0, y: 230, width: 40, height: 80 }
+            north: { x: 384, y: 0, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 350, height: 40 },
             { x: 450, y: 0, width: 350, height: 40 },
-            { x: 0, y: 0, width: 40, height: 230 },
-            { x: 0, y: 310, width: 40, height: 190 },
+            { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
             { x: 0, y: 460, width: 800, height: 40 }
         ],
@@ -847,7 +849,10 @@ const ROOMS = {
             { icon: '⚗️', x: 100, y: 80 },
             { icon: '🧪', x: 300, y: 80 },
             { icon: '📐', x: 600, y: 80 },
-            { icon: '🔬', x: 650, y: 350 }
+            { icon: '🔬', x: 650, y: 350 },
+            { icon: '🔭', x: 50, y: 400 },
+            { icon: '🧬', x: 700, y: 400 },
+            { icon: '🧮', x: 380, y: 200 }
         ],
         spawnPoint: { x: 80, y: 270 }
     },
@@ -859,21 +864,19 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/galeria.png',
         doors: {
-            north: 'biblioteca',
+            north: 'pasillo',
             south: null,
-            east: 'archivo',
+            east: null,
             west: null
         },
         doorPositions: {
-            north: { x: 384, y: 0, width: 80, height: 40 },
-            east: { x: 760, y: 230, width: 40, height: 80 }
+            north: { x: 384, y: 0, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 350, height: 40 },
             { x: 450, y: 0, width: 350, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
-            { x: 760, y: 0, width: 40, height: 230 },
-            { x: 760, y: 310, width: 40, height: 190 },
+            { x: 760, y: 0, width: 40, height: 500 },
             { x: 0, y: 460, width: 800, height: 40 }
         ],
         furniture: [
@@ -894,18 +897,16 @@ const ROOMS = {
         imagePath: 'images/rooms/oficina.png',
         doors: {
             north: null,
-            south: 'laboratorio',
+            south: 'pasillo',
             east: null,
-            west: 'sala-juntas'
+            west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 },
-            west: { x: 0, y: 230, width: 40, height: 80 }
+            south: { x: 384, y: 460, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 800, height: 40 },
-            { x: 0, y: 0, width: 40, height: 230 },
-            { x: 0, y: 310, width: 40, height: 190 },
+            { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
             { x: 0, y: 460, width: 350, height: 40 },
             { x: 450, y: 460, width: 350, height: 40 }
@@ -927,21 +928,17 @@ const ROOMS = {
         imagePath: 'images/rooms/sala-juntas.png',
         doors: {
             north: null,
-            south: 'archivo',
-            east: 'oficina',
-            west: 'biblioteca'
+            south: 'pasillo',
+            east: null,
+            west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 },
-            east: { x: 760, y: 230, width: 40, height: 80 },
-            west: { x: 0, y: 230, width: 40, height: 80 }
+            south: { x: 384, y: 460, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 800, height: 40 },
-            { x: 0, y: 0, width: 40, height: 230 },
-            { x: 0, y: 310, width: 40, height: 190 },
-            { x: 760, y: 0, width: 40, height: 230 },
-            { x: 760, y: 310, width: 40, height: 190 },
+            { x: 0, y: 0, width: 40, height: 500 },
+            { x: 760, y: 0, width: 40, height: 500 },
             { x: 0, y: 460, width: 350, height: 40 },
             { x: 450, y: 460, width: 350, height: 40 }
         ],
@@ -951,7 +948,11 @@ const ROOMS = {
             { icon: '🪑', x: 400, y: 180 },
             { icon: '🪑', x: 500, y: 180 },
             { icon: '🪑', x: 600, y: 180 },
-            { icon: '⚔️', x: 400, y: 60 }
+            { icon: '⚔️', x: 400, y: 60 },
+            { icon: '🛡️', x: 200, y: 60 },
+            { icon: '🛡️', x: 600, y: 60 },
+            { icon: '🕯️', x: 100, y: 400 },
+            { icon: '🕯️', x: 700, y: 400 }
         ],
         spawnPoint: { x: 384, y: 420 }
     },
@@ -964,19 +965,17 @@ const ROOMS = {
         imagePath: 'images/rooms/biblioteca.png',
         doors: {
             north: null,
-            south: 'galeria',
-            east: 'sala-juntas',
+            south: 'pasillo',
+            east: null,
             west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 },
-            east: { x: 760, y: 230, width: 40, height: 80 }
+            south: { x: 384, y: 460, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 800, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
-            { x: 760, y: 0, width: 40, height: 230 },
-            { x: 760, y: 310, width: 40, height: 190 },
+            { x: 760, y: 0, width: 40, height: 500 },
             { x: 0, y: 460, width: 350, height: 40 },
             { x: 450, y: 460, width: 350, height: 40 }
         ],
@@ -989,16 +988,70 @@ const ROOMS = {
             { icon: '📖', x: 300, y: 300 }
         ],
         spawnPoint: { x: 384, y: 420 }
+    },
+    pasillo: {
+        id: 'pasillo',
+        name: 'Pasillo Central',
+        description: 'El eje que conecta todas las cámaras del castillo',
+        cssClass: 'room-pasillo',
+        hasImage: false,
+        doors: {
+            north: 'oficina', // 1 (Arriba Izq)
+            south: 'vestibulo', // R (Abajo Centro/Izq)
+            east: 'sala-juntas', // 3 (Arriba Centro)
+            west: 'laboratorio', // 2 (Abajo Izq)
+            // Necesitamos más puertas para 4, 5, 6. Usaremos posiciones personalizadas.
+        },
+        // Sobreescribimos lógica de puertas estándar para este hub
+        customDoors: [
+            { id: 'vestibulo', x: 50, y: 460, width: 80, height: 40, label: 'R' },
+            { id: 'oficina', x: 150, y: 0, width: 80, height: 40, label: '1' },
+            { id: 'laboratorio', x: 150, y: 460, width: 80, height: 40, label: '2' },
+            { id: 'sala-juntas', x: 360, y: 0, width: 80, height: 40, label: '3' },
+            { id: 'archivo', x: 360, y: 460, width: 80, height: 40, label: '4' },
+            { id: 'biblioteca', x: 570, y: 0, width: 80, height: 40, label: '5' },
+            { id: 'galeria', x: 570, y: 460, width: 80, height: 40, label: '6' }
+        ],
+        doorPositions: {}, // Se usará customDoors en render
+        walls: [
+            // Pared Norte (con huecos para 1, 3, 5)
+            { x: 0, y: 0, width: 150, height: 40 },
+            { x: 230, y: 0, width: 130, height: 40 },
+            { x: 440, y: 0, width: 130, height: 40 },
+            { x: 650, y: 0, width: 150, height: 40 },
+
+            // Pared Sur (con huecos para R, 2, 4, 6)
+            { x: 0, y: 460, width: 50, height: 40 },
+            { x: 130, y: 460, width: 20, height: 40 },
+            { x: 230, y: 460, width: 130, height: 40 },
+            { x: 440, y: 460, width: 130, height: 40 },
+            { x: 650, y: 460, width: 150, height: 40 },
+
+            // Paredes laterales
+            { x: 0, y: 0, width: 40, height: 500 },
+            { x: 760, y: 0, width: 40, height: 500 }
+        ],
+        furniture: [],
+        spawnPoint: { x: 384, y: 250 }
     }
 };
 
-// Mapa de conexiones para navegación
+// Mapa de conexiones para navegación (Referencia)
 const ROOM_CONNECTIONS = {
-    vestibulo: { north: null, south: 'archivo', east: null, west: null },
-    archivo: { north: 'vestibulo', south: null, east: 'laboratorio', west: 'galeria' },
-    laboratorio: { north: 'oficina', south: null, east: null, west: 'archivo' },
-    galeria: { north: 'biblioteca', south: null, east: 'archivo', west: null },
-    oficina: { north: null, south: 'laboratorio', east: null, west: 'sala-juntas' },
-    'sala-juntas': { north: null, south: 'archivo', east: 'oficina', west: 'biblioteca' },
-    biblioteca: { north: null, south: 'galeria', east: 'sala-juntas', west: null }
+    vestibulo: { north: 'pasillo' },
+    pasillo: {
+        vestibulo: 'vestibulo',
+        oficina: 'oficina',
+        laboratorio: 'laboratorio',
+        'sala-juntas': 'sala-juntas',
+        archivo: 'archivo',
+        biblioteca: 'biblioteca',
+        galeria: 'galeria'
+    },
+    oficina: { south: 'pasillo' },
+    laboratorio: { north: 'pasillo' },
+    'sala-juntas': { south: 'pasillo' },
+    archivo: { north: 'pasillo' },
+    biblioteca: { south: 'pasillo' },
+    galeria: { north: 'pasillo' }
 };

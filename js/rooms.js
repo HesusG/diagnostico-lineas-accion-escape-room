@@ -36,6 +36,9 @@ const RoomManager = {
         // Renderizar puertas
         this.renderDoors(room);
 
+        // Renderizar paredes (colisiones)
+        this.renderWalls(room);
+
         // Renderizar mobiliario
         this.renderFurniture(room);
 
@@ -44,10 +47,53 @@ const RoomManager = {
 
         // Renderizar objetos (evidencias y distractores)
         this.renderObjects(roomId);
+
+        // Actualizar minimapa
+        this.renderMinimap();
     },
 
     // Renderizar puertas
     renderDoors(room) {
+        // Lógica para puertas personalizadas (Pasillo Central)
+        if (room.customDoors) {
+            room.customDoors.forEach(door => {
+                // Crear zona de puerta visual
+                const doorZone = document.createElement('div');
+                doorZone.className = 'door-zone';
+                doorZone.style.left = `${door.x}px`;
+                doorZone.style.top = `${door.y}px`;
+                doorZone.style.width = `${door.width}px`;
+                doorZone.style.height = `${door.height}px`;
+
+                // Icono de puerta
+                const doorIcon = document.createElement('div');
+                doorIcon.className = 'door';
+                doorIcon.textContent = '🚪';
+
+                // Etiqueta de puerta (R, 1, 2, etc)
+                if (door.label) {
+                    const label = document.createElement('span');
+                    label.textContent = door.label;
+                    label.style.position = 'absolute';
+                    label.style.top = '-20px';
+                    label.style.left = '50%';
+                    label.style.transform = 'translateX(-50%)';
+                    label.style.color = '#fff';
+                    label.style.fontWeight = 'bold';
+                    label.style.textShadow = '1px 1px 0 #000';
+                    doorIcon.appendChild(label);
+                }
+
+                // Posicionar icono
+                doorIcon.style.left = `${door.x + door.width / 2 - 16}px`;
+                doorIcon.style.top = `${door.y + door.height / 2 - 16}px`;
+
+                this.roomElement.appendChild(doorZone);
+                this.roomElement.appendChild(doorIcon);
+            });
+            return;
+        }
+
         if (!room.doorPositions) return;
 
         for (const [direction, doorPos] of Object.entries(room.doorPositions)) {
@@ -78,6 +124,21 @@ const RoomManager = {
             this.roomElement.appendChild(doorZone);
             this.roomElement.appendChild(doorIcon);
         }
+    },
+
+    // Renderizar paredes (colisiones visibles)
+    renderWalls(room) {
+        if (!room.walls) return;
+
+        room.walls.forEach(wall => {
+            const wallElement = document.createElement('div');
+            wallElement.className = 'wall';
+            wallElement.style.left = `${wall.x}px`;
+            wallElement.style.top = `${wall.y}px`;
+            wallElement.style.width = `${wall.width}px`;
+            wallElement.style.height = `${wall.height}px`;
+            this.roomElement.appendChild(wallElement);
+        });
     },
 
     // Renderizar mobiliario decorativo
@@ -111,6 +172,52 @@ const RoomManager = {
             hint.className = 'interaction-hint';
             hint.textContent = '[E] Hablar';
             npcElement.appendChild(hint);
+
+            // Etiqueta de nombre
+            const nameLabel = document.createElement('div');
+            nameLabel.className = 'npc-label';
+            nameLabel.textContent = npc.name;
+            nameLabel.style.position = 'absolute';
+            nameLabel.style.top = '-25px';
+            nameLabel.style.left = '50%';
+            nameLabel.style.transform = 'translateX(-50%)';
+            nameLabel.style.whiteSpace = 'nowrap';
+            nameLabel.style.fontSize = '12px';
+            nameLabel.style.color = '#4ecca3';
+            nameLabel.style.textShadow = '1px 1px 0 #000';
+            npcElement.appendChild(nameLabel);
+
+            // Click para interactuar
+            npcElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Calcular distancia para validar si está cerca
+                const player = Player;
+                const dist = player.getDistance(
+                    { x: player.x + player.width / 2, y: player.y + player.height / 2 },
+                    { x: npc.position.x + 16, y: npc.position.y + 16 }
+                );
+
+                if (dist <= GAME_CONSTANTS.INTERACTION_DISTANCE * 1.5) { // Un poco más permisivo con click
+                    if (npc.isCondeForDelivery) {
+                        if (DialogManager.showDeliveryDialog()) {
+                            Game.victory();
+                        }
+                    } else {
+                        DialogManager.showNPCDialog(npc);
+                    }
+                } else {
+                    // Feedback visual si está lejos
+                    const hint = npcElement.querySelector('.interaction-hint');
+                    if (hint) {
+                        hint.textContent = '¡Acércate más!';
+                        hint.style.opacity = '1';
+                        setTimeout(() => {
+                            hint.textContent = '[E] Hablar';
+                            hint.style.opacity = '';
+                        }, 1000);
+                    }
+                }
+            });
 
             this.roomElement.appendChild(npcElement);
         }
@@ -163,6 +270,35 @@ const RoomManager = {
         element.dataset.objectId = object.id;
         element.dataset.objectType = type;
 
+        // Click para interactuar
+        element.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const player = Player;
+            const dist = player.getDistance(
+                { x: player.x + player.width / 2, y: player.y + player.height / 2 },
+                { x: object.position.x + 14, y: object.position.y + 14 }
+            );
+
+            if (dist <= GAME_CONSTANTS.INTERACTION_DISTANCE * 1.5) {
+                if (type === 'evidence') {
+                    DialogManager.showObjectInteraction(object, true);
+                } else if (type === 'distractor') {
+                    DialogManager.showObjectInteraction(object, false);
+                }
+            } else {
+                // Feedback visual si está lejos
+                const hint = element.querySelector('.interaction-hint');
+                if (hint) {
+                    hint.textContent = '¡Acércate más!';
+                    hint.style.opacity = '1';
+                    setTimeout(() => {
+                        hint.textContent = '[E] Examinar';
+                        hint.style.opacity = '';
+                    }, 1000);
+                }
+            }
+        });
+
         return element;
     },
 
@@ -191,5 +327,93 @@ const RoomManager = {
     isDeliveryRoom(roomId) {
         const room = ROOMS[roomId];
         return room && room.isDeliveryRoom;
+    },
+
+    // Renderizar minimapa
+    renderMinimap() {
+        const minimap = document.getElementById('minimap');
+        if (!minimap) return;
+
+        minimap.innerHTML = '';
+
+        // Mapa estilo "Palanca de Cambios"
+        // R  1  3  5
+        //    |  |  |
+        //    --H--
+        //    |  |  |
+        //    2  4  6
+
+        const grid = {
+            'vestibulo': { x: 0, y: 0, label: 'R' },
+            'pasillo': { x: 1.5, y: 1, label: 'H' }, // Centro
+            'oficina': { x: 1, y: 0, label: '1' },
+            'laboratorio': { x: 1, y: 2, label: '2' },
+            'sala-juntas': { x: 2, y: 0, label: '3' },
+            'archivo': { x: 2, y: 2, label: '4' },
+            'biblioteca': { x: 3, y: 0, label: '5' },
+            'galeria': { x: 3, y: 2, label: '6' }
+        };
+
+        // Ajustar coordenadas para centrar
+        const offsetX = 15;
+        const offsetY = 25;
+        const scale = 30;
+
+        // Dibujar líneas de conexión (H-pattern)
+        const ctx = document.createElement('canvas');
+        ctx.width = 150;
+        ctx.height = 150;
+        ctx.style.position = 'absolute';
+        ctx.style.top = '0';
+        ctx.style.left = '0';
+        ctx.style.zIndex = '0';
+        minimap.appendChild(ctx);
+
+        const c = ctx.getContext('2d');
+        c.strokeStyle = '#4ecca3';
+        c.lineWidth = 2;
+        c.beginPath();
+        // Línea horizontal central
+        c.moveTo(offsetX + 1 * scale + 15, offsetY + 1 * scale + 15);
+        c.lineTo(offsetX + 3 * scale + 15, offsetY + 1 * scale + 15);
+        // Líneas verticales
+        // 1-2
+        c.moveTo(offsetX + 1 * scale + 15, offsetY + 0 * scale + 15);
+        c.lineTo(offsetX + 1 * scale + 15, offsetY + 2 * scale + 15);
+        // 3-4
+        c.moveTo(offsetX + 2 * scale + 15, offsetY + 0 * scale + 15);
+        c.lineTo(offsetX + 2 * scale + 15, offsetY + 2 * scale + 15);
+        // 5-6
+        c.moveTo(offsetX + 3 * scale + 15, offsetY + 0 * scale + 15);
+        c.lineTo(offsetX + 3 * scale + 15, offsetY + 2 * scale + 15);
+        // R connection
+        c.moveTo(offsetX + 0 * scale + 15, offsetY + 0 * scale + 15);
+        c.lineTo(offsetX + 0 * scale + 15, offsetY + 1 * scale + 15);
+        c.lineTo(offsetX + 1 * scale + 15, offsetY + 1 * scale + 15);
+        c.stroke();
+
+        Object.entries(grid).forEach(([id, pos]) => {
+            const roomDiv = document.createElement('div');
+            roomDiv.className = 'minimap-room';
+            if (id === this.currentRoomId) {
+                roomDiv.classList.add('active');
+            } else {
+                roomDiv.classList.add('visited');
+            }
+
+            roomDiv.style.left = `${offsetX + pos.x * scale}px`;
+            roomDiv.style.top = `${offsetY + pos.y * scale}px`;
+            roomDiv.style.width = `${scale}px`;
+            roomDiv.style.height = `${scale}px`;
+            roomDiv.style.display = 'flex';
+            roomDiv.style.justifyContent = 'center';
+            roomDiv.style.alignItems = 'center';
+            roomDiv.style.fontSize = '10px';
+            roomDiv.style.color = '#fff';
+            roomDiv.textContent = pos.label;
+            roomDiv.style.zIndex = '1';
+
+            minimap.appendChild(roomDiv);
+        });
     }
 };

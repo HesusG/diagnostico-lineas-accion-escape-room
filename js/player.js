@@ -126,15 +126,27 @@ const Player = {
         let canMoveX = true;
         let canMoveY = true;
 
+        const margin = 2; // Margen para permitir deslizamiento
+
         currentRoom.walls.forEach(wall => {
-            // Verificar movimiento X
-            const testBoxX = { x: newX, y: this.y, width: this.width, height: this.height };
+            // Verificar movimiento X (reducir altura para evitar pegarse a paredes superior/inferior)
+            const testBoxX = {
+                x: newX,
+                y: this.y + margin,
+                width: this.width,
+                height: this.height - (margin * 2)
+            };
             if (this.boxCollision(testBoxX, wall)) {
                 canMoveX = false;
             }
 
-            // Verificar movimiento Y
-            const testBoxY = { x: this.x, y: newY, width: this.width, height: this.height };
+            // Verificar movimiento Y (reducir ancho para evitar pegarse a paredes laterales)
+            const testBoxY = {
+                x: this.x + margin,
+                y: newY,
+                width: this.width - (margin * 2),
+                height: this.height
+            };
             if (this.boxCollision(testBoxY, wall)) {
                 canMoveY = false;
             }
@@ -157,9 +169,9 @@ const Player = {
     // Verificar colisión entre dos cajas
     boxCollision(box1, box2) {
         return box1.x < box2.x + box2.width &&
-               box1.x + box1.width > box2.x &&
-               box1.y < box2.y + box2.height &&
-               box1.y + box1.height > box2.y;
+            box1.x + box1.width > box2.x &&
+            box1.y < box2.y + box2.height &&
+            box1.y + box1.height > box2.y;
     },
 
     // Actualizar posición visual
