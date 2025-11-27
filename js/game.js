@@ -10,6 +10,13 @@ const Game = {
     gameLoopId: null,
     mayordomoGreeted: false,
 
+    // Sistema de progresión de NPCs
+    npcProgress: {
+        visited: new Set(),         // NPCs visitados correctamente
+        currentStep: 0,             // Índice actual en NPC_PROGRESSION.order
+        canCollectInRooms: new Set() // Habitaciones donde puede recolectar objetos
+    },
+
     // Inicializar juego
     init() {
         // Inicializar módulos
@@ -119,6 +126,9 @@ const Game = {
         this.currentRoom = 'vestibulo';
         this.isPlaying = true;
 
+        // Resetear progresión de NPCs
+        this.resetNPCProgress();
+
         // Resetear módulos
         Inventory.reset();
         Timer.init();
@@ -144,6 +154,9 @@ const Game = {
 
         // Incrementar intentos
         this.incrementAttempts();
+
+        // Iniciar música de la habitación actual
+        AudioManager.playMusicForRoom(this.currentRoom);
     },
 
     // Loop principal del juego
@@ -172,6 +185,9 @@ const Game = {
 
         this.currentRoom = roomId;
         RoomManager.renderRoom(roomId);
+
+        // Cambiar música según la habitación
+        AudioManager.playMusicForRoom(roomId);
     },
 
     // Marcar objeto como recolectado
@@ -180,12 +196,67 @@ const Game = {
         RoomManager.markObjectCollected(objectId);
     },
 
+    // ============================================
+    // SISTEMA DE PROGRESIÓN DE NPCs
+    // ============================================
+
+    // Verificar si es el turno correcto para visitar este NPC
+    canVisitNPC(npcId) {
+        // El conde siempre se puede visitar (para entregar evidencias)
+        if (npcId === 'conde') return true;
+
+        // Verificar si ya fue visitado
+        if (this.npcProgress.visited.has(npcId)) return true;
+
+        // Verificar si es el siguiente en la secuencia
+        const expectedNpc = NPC_PROGRESSION.order[this.npcProgress.currentStep];
+        return npcId === expectedNpc;
+    },
+
+    // Marcar NPC como visitado y desbloquear su habitación
+    markNPCVisited(npcId) {
+        if (this.npcProgress.visited.has(npcId)) return;
+
+        this.npcProgress.visited.add(npcId);
+
+        // Desbloquear la habitación correspondiente para recolectar objetos
+        const room = NPC_PROGRESSION.roomMap[npcId];
+        if (room) {
+            this.npcProgress.canCollectInRooms.add(room);
+        }
+
+        // Avanzar al siguiente paso si era el NPC correcto
+        const expectedNpc = NPC_PROGRESSION.order[this.npcProgress.currentStep];
+        if (npcId === expectedNpc) {
+            this.npcProgress.currentStep++;
+        }
+    },
+
+    // Verificar si puede recolectar objetos en una habitación
+    canCollectInRoom(roomId) {
+        return this.npcProgress.canCollectInRooms.has(roomId);
+    },
+
+    // Obtener el hint para cuando visitan NPC fuera de orden
+    getWrongOrderHint(npcId) {
+        return NPC_PROGRESSION.wrongOrderHints[npcId] ||
+            "Aún no es momento de hablar conmigo. Buscad al sabio correcto...";
+    },
+
+    // Resetear progresión de NPCs
+    resetNPCProgress() {
+        this.npcProgress.visited = new Set();
+        this.npcProgress.currentStep = 0;
+        this.npcProgress.canCollectInRooms = new Set();
+    },
+
     // Victoria
     victory() {
         this.isPlaying = false;
         this.stopGameLoop();
         Timer.pause();
 
+        AudioManager.stopMusic();
         AudioManager.playVictory();
 
         // Guardar mejor tiempo
@@ -214,6 +285,7 @@ const Game = {
         this.stopGameLoop();
         Timer.pause();
 
+        AudioManager.stopMusic();
         AudioManager.playDefeat();
 
         // Mostrar pantalla correspondiente

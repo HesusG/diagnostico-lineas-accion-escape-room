@@ -586,6 +586,66 @@ La diferencia de 0.31 puntos (8%) entre dimensiones se pierde visualmente.
 ];
 
 // ============================================
+// MAPEO DE EMOJIS A IMÁGENES DE FURNITURE
+// ============================================
+const FURNITURE_IMAGES = {
+    '🪴': 'images/furniture/plant.png',
+    '🛋️': 'images/furniture/couch.png',
+    '🕯️': 'images/furniture/candle.png',
+    '🛡️': 'images/furniture/shield.png',
+    '🏺': 'images/furniture/vase.png',
+    '🗄️': 'images/furniture/filing-cabinet.png',
+    '🕸️': 'images/furniture/cobweb.png',
+    '📦': 'images/furniture/crate.png',
+    '📜': 'images/furniture/scroll-decor.png',
+    '⚗️': 'images/furniture/alembic.png',
+    '🧪': 'images/furniture/test-tube.png',
+    '📐': 'images/furniture/ruler.png',
+    '🔬': 'images/furniture/microscope.png',
+    '🔭': 'images/furniture/telescope.png',
+    '🧬': 'images/furniture/dna-helix.png',
+    '🧮': 'images/furniture/abacus.png',
+    '🖼️': 'images/furniture/painting.png',
+    '🎨': 'images/furniture/palette.png',
+    '👑': 'images/furniture/crown.png',
+    '💼': 'images/furniture/briefcase.png',
+    '🏆': 'images/furniture/trophy.png',
+    '🪑': 'images/furniture/chair.png',
+    '⚔️': 'images/furniture/swords.png',
+    '📚': 'images/furniture/bookshelf.png',
+    '📖': 'images/furniture/open-book.png',
+    '🏰': 'images/furniture/castle-ornament.png'
+};
+
+// ============================================
+// SISTEMA DE PROGRESIÓN DE NPCs
+// ============================================
+const NPC_PROGRESSION = {
+    // Orden en que deben visitarse los NPCs
+    order: ['mayordomo', 'cientifica', 'ejecutiva', 'bibliotecario', 'detective', 'curadora'],
+
+    // Mapeo NPC → Habitación que desbloquea
+    roomMap: {
+        mayordomo: 'vestibulo',
+        cientifica: 'laboratorio',
+        ejecutiva: 'sala-juntas',
+        bibliotecario: 'biblioteca',
+        detective: 'archivo',
+        curadora: 'galeria'
+    },
+
+    // Hints vagos para cuando visitan NPC fuera de orden (sin nombrar a quién ir)
+    wrongOrderHints: {
+        mayordomo: "No es momento de hablar conmigo aún. Primero debéis presentaros en el vestíbulo principal...",
+        cientifica: "Aún no estáis preparado para mis enseñanzas. Buscad primero al guardián de la entrada...",
+        ejecutiva: "Las decisiones vienen después de entender los números. Id al laboratorio primero...",
+        bibliotecario: "El conocimiento estratégico requiere primero entender las comparaciones. Visitad la sala del consejo...",
+        detective: "Antes de verificar fuentes, debéis aprender sobre estrategia. La biblioteca os espera...",
+        curadora: "El arte de visualizar viene al final. Primero id al archivo secreto..."
+    }
+};
+
+// ============================================
 // NPCs CON DIÁLOGOS
 // ============================================
 const NPCS = {
@@ -598,20 +658,39 @@ const NPCS = {
         position: { x: 600, y: 350 },
         hasImage: true,
         imagePath: 'images/npcs/mayordomo.png',
-        dialog: `Bienvenido al Castillo Von Donativo, joven analista.
+        // Diálogo multi-página para el tutorial inicial
+        dialogPages: [
+            `Bienvenido al Castillo Von Donativo, joven analista.
 
-El Conde os espera en sus aposentos, pero primero debéis reunir la evidencia necesaria para el Gran Consejo.
+El Conde os espera, pero primero debéis aprender el <strong>arte del análisis de datos</strong>.
 
-<strong>Vuestra misión:</strong>
+En este castillo, cada sabio os enseñará una parte del proceso. ¡Debéis visitarlos en el orden correcto!`,
+
+            `<strong>El Flujo del Analista de Datos:</strong>
+
+1️⃣ <strong>Estadística Descriptiva</strong> — Entender los datos básicos
+2️⃣ <strong>Segmentación</strong> — Comparar grupos y regiones
+3️⃣ <strong>Análisis Estratégico</strong> — FODA basado en evidencia
+4️⃣ <strong>Verificación</strong> — Validar fuentes y detectar sesgos
+5️⃣ <strong>Visualización</strong> — Comunicar hallazgos efectivamente`,
+
+            `<strong>Vuestra misión:</strong>
+• Visitad a los sabios del castillo <em>en el orden correcto</em>
 • Recolectad los 8 pergaminos con evidencia verdadera
-• Evitad los documentos falsos del Brujo del Sesgo
-• Regresad aquí antes de que la arena se agote
+• Evitad los documentos del Brujo del Sesgo
+• Regresad al Conde antes de que la arena se agote
 
-<strong>Controles del reino:</strong>
-🗝️ WASD o flechas — Caminar
-🗝️ E o Espacio — Examinar/Hablar
+<strong>Controles:</strong> WASD/Flechas — Mover | E/Espacio — Interactuar
 
-<em>Que la sabiduría estadística os acompañe...</em>`
+<strong>Primera parada:</strong> El Laboratorio de Estadísticas
+<em>La Alquimista Dama Alquimia os espera allí...</em>`
+        ],
+        // Diálogo después de ya visitado
+        dialog: `Ya conocéis el camino, joven analista.
+
+Recordad: visitad a los sabios en orden y recolectad evidencia verdadera.
+
+<strong>El Conde aguarda vuestro reporte.</strong>`
     },
     cientifica: {
         id: 'cientifica',
@@ -638,7 +717,7 @@ El Brujo del Sesgo adora los resúmenes simples que ocultan la complejidad...`
         id: 'ejecutiva',
         name: 'Lady Hipótesis',
         title: 'Consejera de Pruebas',
-        icon: '👔',
+        icon: '👩‍💼',
         room: 'sala-juntas',
         position: { x: 400, y: 100 },
         hasImage: true,
@@ -658,7 +737,7 @@ Buscad las comparaciones válidas entre regiones y segmentos.`
         id: 'bibliotecario',
         name: 'Maestro Estrategio',
         title: 'Guardián de los FODA',
-        icon: '📚',
+        icon: '👴',
         room: 'biblioteca',
         position: { x: 600, y: 350 },
         hasImage: true,
@@ -721,7 +800,7 @@ Buscad el gráfico que cuente una historia clara.`
         id: 'conde',
         name: 'Conde Von Donativo',
         title: 'Noble Benefactor',
-        icon: '🧛',
+        icon: '🤴',
         room: 'vestibulo',
         position: { x: 400, y: 100 },
         hasImage: true,
@@ -756,20 +835,20 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/vestibulo.png',
         doors: {
-            north: 'pasillo',
-            south: null,
+            north: null,
+            south: 'pasillo',
             east: null,
             west: null
         },
         doorPositions: {
-            north: { x: 384, y: 0, width: 80, height: 40 }
+            south: { x: 360, y: 460, width: 80, height: 40 }
         },
         walls: [
-            { x: 0, y: 0, width: 350, height: 40 },
-            { x: 450, y: 0, width: 350, height: 40 },
+            { x: 0, y: 0, width: 800, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 800, height: 40 }
+            { x: 0, y: 460, width: 360, height: 40 },
+            { x: 440, y: 460, width: 360, height: 40 }
         ],
         furniture: [
             { icon: '🪴', x: 60, y: 60 },
@@ -794,20 +873,20 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/archivo.png',
         doors: {
-            north: null,
-            south: 'pasillo',
+            north: 'pasillo',
+            south: null,
             east: null,
             west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 }
+            north: { x: 360, y: 0, width: 80, height: 40 }
         },
         walls: [
-            { x: 0, y: 0, width: 800, height: 40 },
+            { x: 0, y: 0, width: 360, height: 40 },
+            { x: 440, y: 0, width: 360, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 350, height: 40 },
-            { x: 450, y: 460, width: 350, height: 40 }
+            { x: 0, y: 460, width: 800, height: 40 }
         ],
         furniture: [
             { icon: '🗄️', x: 100, y: 100 },
@@ -820,7 +899,7 @@ const ROOMS = {
             { icon: '📦', x: 650, y: 400 },
             { icon: '📜', x: 380, y: 200 }
         ],
-        spawnPoint: { x: 384, y: 80 }
+        spawnPoint: { x: 384, y: 420 }
     },
     laboratorio: {
         id: 'laboratorio',
@@ -830,20 +909,20 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/laboratorio.png',
         doors: {
-            north: null,
-            south: 'pasillo',
+            north: 'pasillo',
+            south: null,
             east: null,
             west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 }
+            north: { x: 360, y: 0, width: 80, height: 40 }
         },
         walls: [
-            { x: 0, y: 0, width: 800, height: 40 },
+            { x: 0, y: 0, width: 360, height: 40 },
+            { x: 440, y: 0, width: 360, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 350, height: 40 },
-            { x: 450, y: 460, width: 350, height: 40 }
+            { x: 0, y: 460, width: 800, height: 40 }
         ],
         furniture: [
             { icon: '⚗️', x: 100, y: 80 },
@@ -854,7 +933,7 @@ const ROOMS = {
             { icon: '🧬', x: 700, y: 400 },
             { icon: '🧮', x: 380, y: 200 }
         ],
-        spawnPoint: { x: 80, y: 270 }
+        spawnPoint: { x: 384, y: 420 }
     },
     galeria: {
         id: 'galeria',
@@ -864,20 +943,20 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/galeria.png',
         doors: {
-            north: null,
-            south: 'pasillo',
+            north: 'pasillo',
+            south: null,
             east: null,
             west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 }
+            north: { x: 360, y: 0, width: 80, height: 40 }
         },
         walls: [
-            { x: 0, y: 0, width: 800, height: 40 },
+            { x: 0, y: 0, width: 360, height: 40 },
+            { x: 440, y: 0, width: 360, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 350, height: 40 },
-            { x: 450, y: 460, width: 350, height: 40 }
+            { x: 0, y: 460, width: 800, height: 40 }
         ],
         furniture: [
             { icon: '🖼️', x: 60, y: 80 },
@@ -886,7 +965,7 @@ const ROOMS = {
             { icon: '🖼️', x: 650, y: 80 },
             { icon: '🎨', x: 400, y: 380 }
         ],
-        spawnPoint: { x: 720, y: 270 }
+        spawnPoint: { x: 384, y: 420 }
     },
     oficina: {
         id: 'oficina',
@@ -902,14 +981,14 @@ const ROOMS = {
             west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 }
+            south: { x: 360, y: 460, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 800, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 350, height: 40 },
-            { x: 450, y: 460, width: 350, height: 40 }
+            { x: 0, y: 460, width: 360, height: 40 },
+            { x: 440, y: 460, width: 360, height: 40 }
         ],
         furniture: [
             { icon: '👑', x: 400, y: 80 },
@@ -933,14 +1012,14 @@ const ROOMS = {
             west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 }
+            south: { x: 360, y: 460, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 800, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 350, height: 40 },
-            { x: 450, y: 460, width: 350, height: 40 }
+            { x: 0, y: 460, width: 360, height: 40 },
+            { x: 440, y: 460, width: 360, height: 40 }
         ],
         furniture: [
             { icon: '🪑', x: 200, y: 180 },
@@ -970,14 +1049,14 @@ const ROOMS = {
             west: null
         },
         doorPositions: {
-            south: { x: 384, y: 460, width: 80, height: 40 }
+            south: { x: 360, y: 460, width: 80, height: 40 }
         },
         walls: [
             { x: 0, y: 0, width: 800, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 350, height: 40 },
-            { x: 450, y: 460, width: 350, height: 40 }
+            { x: 0, y: 460, width: 360, height: 40 },
+            { x: 440, y: 460, width: 360, height: 40 }
         ],
         furniture: [
             { icon: '📚', x: 60, y: 80 },
@@ -1004,34 +1083,36 @@ const ROOMS = {
         },
         // Sobreescribimos lógica de puertas estándar para este hub
         customDoors: [
-            // Fila superior (Norte): R, 1, 3, 5
-            { id: 'vestibulo', x: 150, y: 0, width: 80, height: 40, label: 'R' },
-            { id: 'oficina', x: 360, y: 0, width: 80, height: 40, label: '1' },
-            { id: 'sala-juntas', x: 570, y: 0, width: 80, height: 40, label: '3' },
-            { id: 'biblioteca', x: 50, y: 0, width: 80, height: 40, label: '5' },
-            // Fila inferior (Sur): 2, 4, 6
-            { id: 'laboratorio', x: 150, y: 460, width: 80, height: 40, label: '2' },
+            // Fila superior (Norte): R, 1, 3, 5 (de izq a der)
+            { id: 'vestibulo', x: 60, y: 0, width: 80, height: 40, label: 'R' },
+            { id: 'oficina', x: 220, y: 0, width: 80, height: 40, label: '1' },
+            { id: 'sala-juntas', x: 400, y: 0, width: 80, height: 40, label: '3' },
+            { id: 'biblioteca', x: 580, y: 0, width: 80, height: 40, label: '5' },
+            // Fila inferior (Sur): 2, 4, 6 (de izq a der)
+            { id: 'laboratorio', x: 140, y: 460, width: 80, height: 40, label: '2' },
             { id: 'archivo', x: 360, y: 460, width: 80, height: 40, label: '4' },
-            { id: 'galeria', x: 570, y: 460, width: 80, height: 40, label: '6' }
+            { id: 'galeria', x: 580, y: 460, width: 80, height: 40, label: '6' }
         ],
         doorPositions: {}, // Se usará customDoors en render
         walls: [
-            // Pared Norte (con huecos para 1, 3, 5)
-            { x: 0, y: 0, width: 150, height: 40 },
-            { x: 230, y: 0, width: 130, height: 40 },
-            { x: 440, y: 0, width: 130, height: 40 },
-            { x: 650, y: 0, width: 150, height: 40 },
+            // Pared Norte (con huecos para R, 1, 3, 5)
+            // R: 60-140, 1: 220-300, 3: 400-480, 5: 580-660
+            { x: 0, y: 0, width: 60, height: 40 },      // antes de R
+            { x: 140, y: 0, width: 80, height: 40 },   // entre R y 1
+            { x: 300, y: 0, width: 100, height: 40 },  // entre 1 y 3
+            { x: 480, y: 0, width: 100, height: 40 },  // entre 3 y 5
+            { x: 660, y: 0, width: 140, height: 40 },  // después de 5
 
-            // Pared Sur (con huecos para R, 2, 4, 6)
-            { x: 0, y: 460, width: 50, height: 40 },
-            { x: 130, y: 460, width: 20, height: 40 },
-            { x: 230, y: 460, width: 130, height: 40 },
-            { x: 440, y: 460, width: 130, height: 40 },
-            { x: 650, y: 460, width: 150, height: 40 },
+            // Pared Sur (con huecos para 2, 4, 6)
+            // 2: 140-220, 4: 360-440, 6: 580-660
+            { x: 0, y: 460, width: 140, height: 40 },   // antes de 2
+            { x: 220, y: 460, width: 140, height: 40 }, // entre 2 y 4
+            { x: 440, y: 460, width: 140, height: 40 }, // entre 4 y 6
+            { x: 660, y: 460, width: 140, height: 40 }, // después de 6
 
             // Paredes laterales
-            { x: 0, y: 0, width: 40, height: 500 },
-            { x: 760, y: 0, width: 40, height: 500 }
+            { x: 0, y: 40, width: 40, height: 420 },
+            { x: 760, y: 40, width: 40, height: 420 }
         ],
         furniture: [],
         spawnPoint: { x: 384, y: 250 }
@@ -1040,7 +1121,7 @@ const ROOMS = {
 
 // Mapa de conexiones para navegación (Referencia)
 const ROOM_CONNECTIONS = {
-    vestibulo: { north: 'pasillo' },
+    vestibulo: { south: 'pasillo' },
     pasillo: {
         vestibulo: 'vestibulo',
         oficina: 'oficina',

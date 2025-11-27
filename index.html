@@ -27,32 +27,43 @@
 
     <!-- Pantalla de Inicio -->
     <div id="start-screen" class="screen hidden">
-        <div class="start-content">
-            <h1>🧛 La Misión del Conde Donador</h1>
-            <div class="narrative">
-                <p>El <strong>Conde Von Donativo</strong> es el mayor benefactor de Fundación Teletón.</p>
-                <p>Tiene una reunión con su junta directiva en <strong>30 minutos</strong> y necesita un <strong>reporte
-                        ejecutivo con evidencia sólida</strong> para aprobar una donación de $10 millones de pesos.</p>
-                <p>Eres un <strong>analista de datos</strong> que debe recorrer la mansión recolectando la evidencia
-                    correcta:</p>
-                <ul>
-                    <li>📊 Estadísticas descriptivas</li>
-                    <li>📈 Pruebas de hipótesis</li>
-                    <li>📋 Análisis estratégico (FODA/PESTEL)</li>
-                    <li>🎯 KPIs y métricas</li>
-                    <li>📉 Visualizaciones efectivas</li>
-                </ul>
-                <p class="warning">⚠️ ¡CUIDADO! No todo lo que brilla es oro. Hay documentos con errores que harían
-                    quedar mal al Conde.</p>
+        <div class="start-content-wide">
+            <div class="start-left">
+                <h1>La Misión del Conde Donador</h1>
+                <div class="narrative">
+                    <p>El <strong>Conde Von Donativo</strong> es el mayor benefactor de Fundación Teletón.</p>
+                    <p>Tiene una reunión con su junta directiva en <strong>30 minutos</strong> y necesita un <strong>reporte
+                            ejecutivo con evidencia sólida</strong> para aprobar una donación de $10 millones de pesos.</p>
+                    <p>Eres un <strong>analista de datos</strong> que debe recorrer la mansión recolectando la evidencia
+                        correcta:</p>
+                    <ul>
+                        <li>📊 Estadísticas descriptivas</li>
+                        <li>📈 Pruebas de hipótesis</li>
+                        <li>📋 Análisis estratégico (FODA/PESTEL)</li>
+                        <li>🎯 KPIs y métricas</li>
+                        <li>📉 Visualizaciones efectivas</li>
+                    </ul>
+                    <p class="warning">⚠️ ¡CUIDADO! No todo lo que brilla es oro. Hay documentos con errores que harían
+                        quedar mal al Conde.</p>
+                </div>
+                <div class="controls-info">
+                    <h3>Controles</h3>
+                    <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> -
+                        Mover</p>
+                    <p><kbd>E</kbd> o <kbd>Espacio</kbd> - Interactuar</p>
+                </div>
+                <button id="start-btn" class="btn-primary">🚀 Comenzar Misión</button>
+                <div class="best-time" id="best-time-display"></div>
             </div>
-            <div class="controls-info">
-                <h3>Controles</h3>
-                <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> -
-                    Mover</p>
-                <p><kbd>E</kbd> o <kbd>Espacio</kbd> - Interactuar</p>
+            <div class="start-right">
+                <div class="start-image-placeholder">
+                    <img src="images/start-screen.png" alt="Conde Von Donativo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder-text">
+                        <span>🏰</span>
+                        <p>Imagen del Conde</p>
+                    </div>
+                </div>
             </div>
-            <button id="start-btn" class="btn-primary">🚀 Comenzar Misión</button>
-            <div class="best-time" id="best-time-display"></div>
         </div>
     </div>
 
@@ -123,7 +134,11 @@
                 <span id="npc-name">Mayordomo</span>
             </div>
             <p id="dialog-text"></p>
-            <button id="btn-close-dialog" class="btn-secondary">Continuar</button>
+            <div class="dialog-buttons">
+                <button id="btn-next-dialog" class="btn-primary hidden">Siguiente →</button>
+                <button id="btn-close-dialog" class="btn-secondary">Continuar</button>
+            </div>
+            <div id="dialog-page-indicator" class="hidden">1/3</div>
         </div>
     </div>
 

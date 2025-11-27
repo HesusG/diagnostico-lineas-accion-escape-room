@@ -203,7 +203,7 @@ const Player = {
 
                     const targetRoom = door.id;
                     if (targetRoom && ROOMS[targetRoom]) {
-                        this.enterRoom(targetRoom, this.getOppositeDirection(currentRoom.id, targetRoom));
+                        this.enterRoom(targetRoom, this.getOppositeDirection(currentRoom.id, targetRoom), currentRoom.id);
                     }
                 }
             });
@@ -224,7 +224,7 @@ const Player = {
 
                 const targetRoom = currentRoom.doors[direction];
                 if (targetRoom) {
-                    this.enterRoom(targetRoom, direction);
+                    this.enterRoom(targetRoom, direction, currentRoom.id);
                 }
             }
         }
@@ -234,15 +234,15 @@ const Player = {
     getOppositeDirection(fromRoom, toRoom) {
         // Si venimos del pasillo, determinar desde qué dirección entrar
         if (fromRoom === 'pasillo') {
-            // El pasillo siempre conecta por el norte para salas superiores
-            // y por el sur para salas inferiores y vestíbulo
-            const upperRooms = ['oficina', 'sala-juntas', 'biblioteca'];
-            const lowerRooms = ['laboratorio', 'archivo', 'galeria', 'vestibulo'];
+            // Fila SUPERIOR del pasillo (R, 1, 3, 5): entrar desde el SUR
+            const upperRooms = ['vestibulo', 'oficina', 'sala-juntas', 'biblioteca'];
+            // Fila INFERIOR del pasillo (2, 4, 6): entrar desde el NORTE
+            const lowerRooms = ['laboratorio', 'archivo', 'galeria'];
 
             if (upperRooms.includes(toRoom)) {
-                return 'south'; // Entrar desde el sur
+                return 'south'; // Entrar desde el sur (puertas arriba del pasillo)
             } else if (lowerRooms.includes(toRoom)) {
-                return 'north'; // Entrar desde el norte
+                return 'north'; // Entrar desde el norte (puertas abajo del pasillo)
             }
         }
         // Si vamos hacia el pasillo, entrar desde cualquier lado
@@ -250,7 +250,7 @@ const Player = {
     },
 
     // Entrar a una habitación
-    enterRoom(roomId, fromDirection) {
+    enterRoom(roomId, fromDirection, fromRoom = null) {
         if (!ROOMS[roomId]) return;
 
         AudioManager.playDoorOpen();
@@ -259,20 +259,33 @@ const Player = {
         const targetRoom = ROOMS[roomId];
         let entryPoint = { ...targetRoom.spawnPoint };
 
-        // Ajustar posición según dirección de entrada
-        switch (fromDirection) {
-            case 'north':
-                entryPoint.y = 420; // Aparece en el sur
-                break;
-            case 'south':
-                entryPoint.y = 80; // Aparece en el norte
-                break;
-            case 'east':
-                entryPoint.x = 80; // Aparece en el oeste
-                break;
-            case 'west':
-                entryPoint.x = 720; // Aparece en el este
-                break;
+        // Si entramos al pasillo, aparecer frente a la puerta de origen
+        if (roomId === 'pasillo' && fromRoom && targetRoom.customDoors) {
+            const originDoor = targetRoom.customDoors.find(d => d.id === fromRoom);
+            if (originDoor) {
+                entryPoint.x = originDoor.x + originDoor.width / 2 - this.width / 2;
+                // Si la puerta está arriba (y=0), aparecer abajo de ella
+                // Si la puerta está abajo (y=460), aparecer arriba de ella
+                entryPoint.y = originDoor.y < 100 ? 80 : 380;
+            }
+        } else {
+            // Habitaciones normales: aparecer centrado frente a la puerta
+            switch (fromDirection) {
+                case 'north':
+                    entryPoint.y = 420;
+                    entryPoint.x = 360 + 40 - this.width / 2; // Centrado en puerta
+                    break;
+                case 'south':
+                    entryPoint.y = 80;
+                    entryPoint.x = 360 + 40 - this.width / 2;
+                    break;
+                case 'east':
+                    entryPoint.x = 80;
+                    break;
+                case 'west':
+                    entryPoint.x = 720;
+                    break;
+            }
         }
 
         this.x = entryPoint.x;

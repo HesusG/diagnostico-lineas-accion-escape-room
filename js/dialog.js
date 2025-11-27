@@ -7,6 +7,10 @@ const DialogManager = {
     currentModal: null,
     currentObject: null,
     isOpen: false,
+    // Para diálogos multi-página
+    currentNPC: null,
+    currentDialogPages: [],
+    currentPageIndex: 0,
 
     // Inicializar
     init() {
@@ -19,6 +23,12 @@ const DialogManager = {
         const closeDialogBtn = document.getElementById('btn-close-dialog');
         if (closeDialogBtn) {
             closeDialogBtn.addEventListener('click', () => this.closeDialog());
+        }
+
+        // Botón de siguiente página en diálogo
+        const nextDialogBtn = document.getElementById('btn-next-dialog');
+        if (nextDialogBtn) {
+            nextDialogBtn.addEventListener('click', () => this.nextDialogPage());
         }
 
         // Botones de recolección
@@ -58,22 +68,181 @@ const DialogManager = {
 
         if (!modal || !npcIcon || !npcName || !dialogText) return;
 
+        // Guardar NPC actual
+        this.currentNPC = npc;
+
+        // Verificar si es el conde (caso especial - siempre se puede hablar)
+        if (npc.isCondeForDelivery) {
+            this.showRegularDialog(npc, modal, npcIcon, npcName, dialogText);
+            return;
+        }
+
+        // Verificar si puede visitar este NPC según la progresión
+        if (!Game.canVisitNPC(npc.id)) {
+            // Mostrar hint de orden incorrecto
+            this.showWrongOrderDialog(npc, modal, npcIcon, npcName, dialogText);
+            return;
+        }
+
+        // Verificar si ya fue visitado
+        const alreadyVisited = Game.npcProgress.visited.has(npc.id);
+
+        // Si tiene diálogos multi-página y es primera visita
+        if (npc.dialogPages && npc.dialogPages.length > 0 && !alreadyVisited) {
+            this.showMultiPageDialog(npc, modal, npcIcon, npcName, dialogText);
+        } else {
+            // Diálogo normal
+            this.showRegularDialog(npc, modal, npcIcon, npcName, dialogText);
+            // Marcar como visitado al cerrar
+            if (!alreadyVisited) {
+                Game.markNPCVisited(npc.id);
+            }
+        }
+    },
+
+    // Mostrar diálogo regular (una página)
+    showRegularDialog(npc, modal, npcIcon, npcName, dialogText) {
         // Configurar contenido
         npcIcon.textContent = npc.icon;
         npcName.innerHTML = `${npc.name} <small style="opacity: 0.7">${npc.title || ''}</small>`;
         dialogText.innerHTML = npc.dialog;
+
+        // Ocultar botón siguiente, mostrar continuar
+        this.hideNextButton();
+        this.hidePageIndicator();
 
         // Mostrar modal
         modal.classList.remove('hidden');
         this.isOpen = true;
         this.currentModal = modal;
 
-        // Pausar timer durante diálogo
+        // Pausar timer
         if (typeof Timer !== 'undefined') {
             Timer.pause();
         }
 
         AudioManager.playInteract();
+    },
+
+    // Mostrar diálogo multi-página
+    showMultiPageDialog(npc, modal, npcIcon, npcName, dialogText) {
+        // Guardar páginas
+        this.currentDialogPages = npc.dialogPages;
+        this.currentPageIndex = 0;
+
+        // Configurar cabecera
+        npcIcon.textContent = npc.icon;
+        npcName.innerHTML = `${npc.name} <small style="opacity: 0.7">${npc.title || ''}</small>`;
+
+        // Mostrar primera página
+        dialogText.innerHTML = this.currentDialogPages[0];
+
+        // Mostrar controles de página
+        this.updatePageControls();
+
+        // Mostrar modal
+        modal.classList.remove('hidden');
+        this.isOpen = true;
+        this.currentModal = modal;
+
+        // Pausar timer
+        if (typeof Timer !== 'undefined') {
+            Timer.pause();
+        }
+
+        AudioManager.playInteract();
+    },
+
+    // Avanzar a siguiente página de diálogo
+    nextDialogPage() {
+        if (this.currentDialogPages.length === 0) return;
+
+        this.currentPageIndex++;
+
+        // Verificar si hay más páginas
+        if (this.currentPageIndex < this.currentDialogPages.length) {
+            const dialogText = document.getElementById('dialog-text');
+            if (dialogText) {
+                dialogText.innerHTML = this.currentDialogPages[this.currentPageIndex];
+            }
+            this.updatePageControls();
+            AudioManager.playInteract();
+        }
+    },
+
+    // Actualizar controles de página (botones e indicador)
+    updatePageControls() {
+        const nextBtn = document.getElementById('btn-next-dialog');
+        const closeBtn = document.getElementById('btn-close-dialog');
+        const indicator = document.getElementById('dialog-page-indicator');
+
+        const isLastPage = this.currentPageIndex >= this.currentDialogPages.length - 1;
+
+        // Mostrar/ocultar botón siguiente
+        if (nextBtn) {
+            if (isLastPage) {
+                nextBtn.classList.add('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+            }
+        }
+
+        // Cambiar texto del botón cerrar
+        if (closeBtn) {
+            closeBtn.textContent = isLastPage ? 'Continuar' : 'Saltar';
+        }
+
+        // Actualizar indicador de página
+        if (indicator) {
+            indicator.classList.remove('hidden');
+            indicator.textContent = `${this.currentPageIndex + 1}/${this.currentDialogPages.length}`;
+        }
+    },
+
+    // Mostrar diálogo cuando visitan NPC en orden incorrecto
+    showWrongOrderDialog(npc, modal, npcIcon, npcName, dialogText) {
+        npcIcon.textContent = npc.icon;
+        npcName.innerHTML = `${npc.name} <small style="opacity: 0.7">${npc.title || ''}</small>`;
+
+        // Obtener hint vago
+        const hint = Game.getWrongOrderHint(npc.id);
+        dialogText.innerHTML = `<em>${hint}</em>`;
+
+        // Ocultar botón siguiente
+        this.hideNextButton();
+        this.hidePageIndicator();
+
+        // Mostrar modal
+        modal.classList.remove('hidden');
+        this.isOpen = true;
+        this.currentModal = modal;
+
+        // Pausar timer
+        if (typeof Timer !== 'undefined') {
+            Timer.pause();
+        }
+
+        AudioManager.playInteract();
+    },
+
+    // Ocultar botón siguiente
+    hideNextButton() {
+        const nextBtn = document.getElementById('btn-next-dialog');
+        if (nextBtn) {
+            nextBtn.classList.add('hidden');
+        }
+        const closeBtn = document.getElementById('btn-close-dialog');
+        if (closeBtn) {
+            closeBtn.textContent = 'Continuar';
+        }
+    },
+
+    // Ocultar indicador de página
+    hidePageIndicator() {
+        const indicator = document.getElementById('dialog-page-indicator');
+        if (indicator) {
+            indicator.classList.add('hidden');
+        }
     },
 
     // Cerrar diálogo
@@ -82,6 +251,20 @@ const DialogManager = {
         if (modal) {
             modal.classList.add('hidden');
         }
+
+        // Si había un diálogo multi-página, marcar NPC como visitado
+        if (this.currentNPC && this.currentDialogPages.length > 0) {
+            const alreadyVisited = Game.npcProgress.visited.has(this.currentNPC.id);
+            if (!alreadyVisited) {
+                Game.markNPCVisited(this.currentNPC.id);
+            }
+        }
+
+        // Limpiar estado de diálogo multi-página
+        this.currentDialogPages = [];
+        this.currentPageIndex = 0;
+        this.currentNPC = null;
+
         this.isOpen = false;
         this.currentModal = null;
 
@@ -93,6 +276,13 @@ const DialogManager = {
 
     // Mostrar modal de interacción con objeto
     showObjectInteraction(object, isEvidence) {
+        // Verificar si puede recolectar en esta habitación
+        const objectRoom = object.room;
+        if (!Game.canCollectInRoom(objectRoom)) {
+            this.showBlockedObjectDialog(objectRoom);
+            return;
+        }
+
         const modal = document.getElementById('interaction-modal');
         const icon = document.getElementById('modal-icon');
         const title = document.getElementById('modal-title');
@@ -119,6 +309,23 @@ const DialogManager = {
         }
 
         AudioManager.playInteract();
+    },
+
+    // Mostrar diálogo cuando intenta recolectar sin haber hablado con el NPC
+    showBlockedObjectDialog(roomId) {
+        // Encontrar el nombre de la habitación
+        const room = ROOMS[roomId];
+        const roomName = room ? room.name : 'esta sala';
+
+        this.showCustomDialog(
+            '🚫',
+            'Pergamino Protegido',
+            `Este documento está protegido por el sabio de <strong>${roomName}</strong>.
+
+<em>Debéis hablar primero con el guardián de esta cámara antes de poder examinar sus pergaminos.</em>
+
+Buscad al sabio y aprended de su sabiduría.`
+        );
     },
 
     // Recolectar item actual

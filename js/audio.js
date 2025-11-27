@@ -8,6 +8,22 @@ const AudioManager = {
     muted: false,
     initialized: false,
 
+    // Sistema de música
+    currentMusic: null,
+    musicVolume: 0.3,
+    musicTracks: {
+        'theme': 'music/theme.mp3',
+        'vestibulo': 'music/theme.mp3',
+        'pasillo': 'music/theme.mp3',
+        'laboratorio': 'music/laboratorio.mp3',
+        'archivo': 'music/archivo.mp3',
+        'biblioteca': 'music/biblioteca.mp3',
+        'sala-juntas': 'music/sala-juntas.mp3',
+        'oficina': 'music/theme.mp3',
+        'galeria': 'music/biblioteca.mp3'
+    },
+    currentTrackName: null,
+
     // Inicializar contexto de audio (debe llamarse tras interacción del usuario)
     init() {
         if (this.initialized) return;
@@ -20,6 +36,11 @@ const AudioManager = {
             const savedMute = localStorage.getItem('escapeRoom_muted');
             this.muted = savedMute === 'true';
             this.updateMuteButton();
+
+            // Crear elemento de audio para música
+            this.currentMusic = new Audio();
+            this.currentMusic.loop = true;
+            this.currentMusic.volume = this.muted ? 0 : this.musicVolume;
         } catch (e) {
             console.warn('Web Audio API no soportada:', e);
         }
@@ -30,6 +51,12 @@ const AudioManager = {
         this.muted = !this.muted;
         localStorage.setItem('escapeRoom_muted', this.muted);
         this.updateMuteButton();
+
+        // Actualizar volumen de música
+        if (this.currentMusic) {
+            this.currentMusic.volume = this.muted ? 0 : this.musicVolume;
+        }
+
         return this.muted;
     },
 
@@ -309,5 +336,105 @@ const AudioManager = {
 
         osc.start(now);
         osc.stop(now + 1.2);
+    },
+
+    // ============================================
+    // SISTEMA DE MÚSICA DE FONDO
+    // ============================================
+
+    // Reproducir música para una habitación
+    playMusicForRoom(roomId) {
+        if (!this.currentMusic) return;
+
+        const trackPath = this.musicTracks[roomId] || this.musicTracks['theme'];
+
+        // Si ya está reproduciendo la misma pista, no hacer nada
+        if (this.currentTrackName === trackPath && !this.currentMusic.paused) {
+            return;
+        }
+
+        // Fade out actual y cambiar
+        this.crossfadeToTrack(trackPath);
+    },
+
+    // Crossfade entre pistas
+    crossfadeToTrack(trackPath) {
+        if (!this.currentMusic) return;
+
+        const fadeOutDuration = 500; // ms
+        const fadeInDuration = 1000; // ms
+
+        // Si hay música reproduciéndose, hacer fade out
+        if (!this.currentMusic.paused && this.currentTrackName) {
+            const startVolume = this.currentMusic.volume;
+            const fadeOutStep = startVolume / (fadeOutDuration / 50);
+
+            const fadeOut = setInterval(() => {
+                if (this.currentMusic.volume > fadeOutStep) {
+                    this.currentMusic.volume -= fadeOutStep;
+                } else {
+                    clearInterval(fadeOut);
+                    this.currentMusic.pause();
+                    this.loadAndPlayTrack(trackPath, fadeInDuration);
+                }
+            }, 50);
+        } else {
+            this.loadAndPlayTrack(trackPath, fadeInDuration);
+        }
+    },
+
+    // Cargar y reproducir pista con fade in
+    loadAndPlayTrack(trackPath, fadeInDuration) {
+        if (!this.currentMusic) return;
+
+        this.currentTrackName = trackPath;
+        this.currentMusic.src = trackPath;
+        this.currentMusic.volume = 0;
+
+        const playPromise = this.currentMusic.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                // Fade in
+                if (!this.muted) {
+                    const targetVolume = this.musicVolume;
+                    const fadeInStep = targetVolume / (fadeInDuration / 50);
+
+                    const fadeIn = setInterval(() => {
+                        if (this.currentMusic.volume < targetVolume - fadeInStep) {
+                            this.currentMusic.volume += fadeInStep;
+                        } else {
+                            this.currentMusic.volume = targetVolume;
+                            clearInterval(fadeIn);
+                        }
+                    }, 50);
+                }
+            }).catch(error => {
+                console.log('Auto-play bloqueado:', error);
+            });
+        }
+    },
+
+    // Detener música
+    stopMusic() {
+        if (this.currentMusic) {
+            this.currentMusic.pause();
+            this.currentMusic.currentTime = 0;
+            this.currentTrackName = null;
+        }
+    },
+
+    // Pausar música
+    pauseMusic() {
+        if (this.currentMusic) {
+            this.currentMusic.pause();
+        }
+    },
+
+    // Reanudar música
+    resumeMusic() {
+        if (this.currentMusic && this.currentTrackName) {
+            this.currentMusic.play().catch(e => console.log('No se pudo reanudar música'));
+        }
     }
 };

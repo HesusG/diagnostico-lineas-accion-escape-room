@@ -11,6 +11,22 @@ Este documento contiene prompts detallados para generar imágenes con IA en **es
 
 ---
 
+## 0. Pantalla de Inicio (350x450 px)
+
+### Imagen Principal - Conde Von Donativo
+**Archivo:** `images/start-screen.png`
+
+```
+Pixel art portrait scene, 16-bit SNES RPG style. A noble vampire count standing in his gothic castle study. He wears an elegant black cape with red lining and a golden medallion. His pose is welcoming but mysterious, one hand gesturing toward scrolls and charts on a desk. Behind him, a large stained glass window with moonlight streaming through. The desk has scattered documents with graphs and data visualizations. Candelabras with flickering flames illuminate the scene. A banner with a charity/foundation crest hangs on the wall. Atmosphere: mysterious yet benevolent, mixing medieval fantasy with data analysis theme. Vertical composition for sidebar placement. Color palette: deep purples, blacks, gold accents, red cape lining, warm candlelight, cool moonlight blue. Resolution 350x450 pixels. Clean pixel art, no smoothing.
+```
+
+**Alternativa más simple:**
+```
+Pixel art 16-bit style, vertical portrait. A distinguished vampire noble in black cape with red lining, standing in a candlelit medieval study. He holds a scroll with a bar chart visible. Gothic window with moonlight behind him. Warm orange candlelight contrasts with cool blue moonlight. Mysterious but friendly expression. Gold medallion on chest. Stack of documents with graphs on desk beside him. Fantasy RPG aesthetic like Final Fantasy VI. 350x450 pixels.
+```
+
+---
+
 ## 1. Fondos de Habitaciones (800x500 px)
 
 ### 1.1 Vestíbulo del Castillo
@@ -168,6 +184,173 @@ Pixel art damaged wooden picture frame, 16-bit style. Cracked and worn. Warning 
 
 ---
 
+## 6. Adornos/Muebles de Habitaciones (32x32 px o 48x48 px)
+
+**Nota:** Todos los adornos deben tener fondo transparente y estilo pixel art 16-bit consistente.
+
+**Prompt base para todos los adornos:**
+> Pixel art, 16-bit SNES style, transparent background, clean pixels, no anti-aliasing, top-down 3/4 view perspective, single object centered.
+
+---
+
+### 6.1 Planta en maceta (🪴)
+**Archivo:** `images/furniture/plant.png`
+```
+Pixel art potted plant, 16-bit SNES style. Green leafy plant in decorative clay pot. Medieval/fantasy style planter. Transparent background. Top-down 3/4 view. Color palette: various greens, terracotta pot, soil brown. 32x32 pixels.
+```
+
+### 6.2 Sofá/Sillón (🛋️)
+**Archivo:** `images/furniture/couch.png`
+```
+Pixel art medieval couch or settee, 16-bit SNES style. Ornate wooden frame with red velvet cushions. Royal, elegant design. Transparent background. Top-down 3/4 view. Color palette: dark wood, deep red velvet, gold trim. 48x32 pixels.
+```
+
+### 6.3 Candelabro/Vela (🕯️)
+**Archivo:** `images/furniture/candle.png`
+```
+Pixel art candelabra with lit candles, 16-bit SNES style. Medieval brass or gold candlestick holder with flickering flame. Warm glow effect. Transparent background. Top-down 3/4 view. Color palette: gold/brass, cream candle, orange flame, yellow glow. 32x32 pixels.
+```
+
+### 6.4 Escudo heráldico (🛡️)
+**Archivo:** `images/furniture/shield.png`
+```
+Pixel art medieval heraldic shield, 16-bit SNES style. Decorative wall-mounted shield with coat of arms design. Knight's shield with metallic trim. Transparent background. Front view slightly angled. Color palette: silver metal, red and blue heraldry, gold accents. 32x32 pixels.
+```
+
+### 6.5 Jarrón antiguo (🏺)
+**Archivo:** `images/furniture/vase.png`
+```
+Pixel art ancient decorative vase, 16-bit SNES style. Ornate ceramic or clay amphora with painted designs. Mediterranean/medieval style. Transparent background. Top-down 3/4 view. Color palette: terracotta, cream, blue decorative patterns. 32x32 pixels.
+```
+
+### 6.6 Archivero/Gabinete (🗄️)
+**Archivo:** `images/furniture/filing-cabinet.png`
+```
+Pixel art wooden filing cabinet, 16-bit SNES style. Medieval-style wooden chest of drawers for documents. Metal handles, aged wood look. Transparent background. Top-down 3/4 view. Color palette: dark wood browns, brass handles, parchment visible. 32x48 pixels.
+```
+
+### 6.7 Telaraña (🕸️)
+**Archivo:** `images/furniture/cobweb.png`
+```
+Pixel art spider web in corner, 16-bit SNES style. Dusty, abandoned cobweb decoration. Spooky atmosphere element. Transparent background. Corner perspective. Color palette: white/gray web strands, subtle dust particles. 32x32 pixels.
+```
+
+### 6.8 Caja de almacenamiento (📦)
+**Archivo:** `images/furniture/crate.png`
+```
+Pixel art wooden storage crate, 16-bit SNES style. Medieval wooden box with metal reinforcements. Used for storing documents or supplies. Transparent background. Top-down 3/4 view. Color palette: light wood, dark metal bands, rope accents. 32x32 pixels.
+```
+
+### 6.9 Pergamino decorativo (📜)
+**Archivo:** `images/furniture/scroll-decor.png`
+```
+Pixel art decorative scroll on stand, 16-bit SNES style. Rolled parchment displayed on wooden holder. Medieval document display. Transparent background. Top-down 3/4 view. Color palette: cream parchment, dark wood stand, red wax seal. 32x32 pixels.
+```
+
+### 6.10 Matraz de alquimia (⚗️)
+**Archivo:** `images/furniture/alembic.png`
+```
+Pixel art alchemist alembic/distillation flask, 16-bit SNES style. Glass vessel with bubbling colored liquid. Magical/scientific equipment. Transparent background. Top-down 3/4 view. Color palette: clear glass, purple/green glowing liquid, brass fittings. 32x48 pixels.
+```
+
+### 6.11 Tubo de ensayo (🧪)
+**Archivo:** `images/furniture/test-tube.png`
+```
+Pixel art test tube in holder, 16-bit SNES style. Glass tube with colorful potion/liquid. Laboratory equipment medieval fantasy style. Transparent background. Top-down 3/4 view. Color palette: clear glass, bright colored liquid (blue/green), wooden rack. 32x32 pixels.
+```
+
+### 6.12 Escuadra/Regla (📐)
+**Archivo:** `images/furniture/ruler.png`
+```
+Pixel art drafting tools, 16-bit SNES style. Medieval measuring instruments - ruler and set square on desk. Mathematical/architectural tools. Transparent background. Top-down view. Color palette: wood brown, brass edges, measurement markings. 32x32 pixels.
+```
+
+### 6.13 Microscopio (🔬)
+**Archivo:** `images/furniture/microscope.png`
+```
+Pixel art antique microscope, 16-bit SNES style. Brass and glass scientific instrument. Victorian/steampunk aesthetic. Transparent background. Top-down 3/4 view. Color palette: brass gold, black metal, glass lens. 32x48 pixels.
+```
+
+### 6.14 Telescopio (🔭)
+**Archivo:** `images/furniture/telescope.png`
+```
+Pixel art telescope on tripod, 16-bit SNES style. Brass spyglass on wooden stand. Astronomical/navigation instrument. Transparent background. Top-down 3/4 view. Color palette: brass gold, dark wood tripod, glass lens. 48x48 pixels.
+```
+
+### 6.15 ADN/Helix (🧬)
+**Archivo:** `images/furniture/dna-helix.png`
+```
+Pixel art DNA double helix model, 16-bit SNES style. Decorative molecular structure display. Scientific decoration. Transparent background. Top-down 3/4 view. Color palette: blue and red base pairs, white/gray backbone, metallic stand. 32x48 pixels.
+```
+
+### 6.16 Ábaco (🧮)
+**Archivo:** `images/furniture/abacus.png`
+```
+Pixel art wooden abacus, 16-bit SNES style. Traditional counting frame with colored beads. Mathematical instrument. Transparent background. Top-down 3/4 view. Color palette: dark wood frame, colorful beads (red, blue, yellow). 48x32 pixels.
+```
+
+### 6.17 Cuadro/Marco (🖼️)
+**Archivo:** `images/furniture/painting.png`
+```
+Pixel art framed painting on wall, 16-bit SNES style. Ornate gold frame with landscape or portrait inside. Art gallery decoration. Transparent background. Front view. Color palette: gold frame, colorful painting, wall mount. 48x48 pixels.
+```
+
+### 6.18 Paleta de pintor (🎨)
+**Archivo:** `images/furniture/palette.png`
+```
+Pixel art artist's palette with brushes, 16-bit SNES style. Wooden palette with paint dabs and brushes. Art supplies decoration. Transparent background. Top-down view. Color palette: wood brown, rainbow paint colors, brush handles. 32x32 pixels.
+```
+
+### 6.19 Corona (👑)
+**Archivo:** `images/furniture/crown.png`
+```
+Pixel art royal crown on cushion, 16-bit SNES style. Golden jeweled crown displayed on velvet pillow. Royal symbol decoration. Transparent background. Top-down 3/4 view. Color palette: gold, red/blue jewels, purple velvet cushion. 32x32 pixels.
+```
+
+### 6.20 Maletín (💼)
+**Archivo:** `images/furniture/briefcase.png`
+```
+Pixel art leather briefcase, 16-bit SNES style. Professional document case with brass clasps. Medieval-style satchel. Transparent background. Top-down 3/4 view. Color palette: brown leather, brass buckles, document papers visible. 32x32 pixels.
+```
+
+### 6.21 Trofeo (🏆)
+**Archivo:** `images/furniture/trophy.png`
+```
+Pixel art golden trophy cup, 16-bit SNES style. Championship goblet with handles on pedestal. Award decoration. Transparent background. Top-down 3/4 view. Color palette: shiny gold, dark pedestal base, engraved details. 32x48 pixels.
+```
+
+### 6.22 Silla medieval (🪑)
+**Archivo:** `images/furniture/chair.png`
+```
+Pixel art medieval wooden chair, 16-bit SNES style. High-backed council chair with carved details. Noble seating furniture. Transparent background. Top-down 3/4 view. Color palette: dark wood, leather seat, brass studs. 32x32 pixels.
+```
+
+### 6.23 Espadas cruzadas (⚔️)
+**Archivo:** `images/furniture/swords.png`
+```
+Pixel art crossed swords wall decoration, 16-bit SNES style. Two medieval swords mounted in X pattern. Heraldic wall ornament. Transparent background. Front view. Color palette: silver blades, gold hilts, leather grips. 48x48 pixels.
+```
+
+### 6.24 Estantería de libros (📚)
+**Archivo:** `images/furniture/bookshelf.png`
+```
+Pixel art bookshelf segment, 16-bit SNES style. Wooden shelf filled with colorful book spines. Library furniture. Transparent background. Front view slightly angled. Color palette: dark wood, multicolored book spines (red, blue, green, brown). 48x48 pixels.
+```
+
+### 6.25 Libro abierto (📖)
+**Archivo:** `images/furniture/open-book.png`
+```
+Pixel art open book on lectern, 16-bit SNES style. Ancient tome displayed open with visible text/diagrams. Study decoration. Transparent background. Top-down 3/4 view. Color palette: cream pages, dark ink text, wood stand. 32x32 pixels.
+```
+
+### 6.26 Castillo decorativo (🏰)
+**Archivo:** `images/furniture/castle-ornament.png`
+```
+Pixel art miniature castle model, 16-bit SNES style. Decorative castle sculpture or wall emblem. Heraldic symbol. Transparent background. Front view. Color palette: gray stone, red banners, gold accents. 48x48 pixels.
+```
+
+---
+
 ## Herramientas Recomendadas para Generación
 
 1. **Midjourney** - Usar `--style raw --stylize 50` para mejor control de pixel art
@@ -189,6 +372,7 @@ Pixel art damaged wooden picture frame, 16-bit style. Cracked and worn. Warning 
 
 ## Checklist de Imágenes
 
+### Habitaciones
 - [ ] `images/rooms/vestibulo.png`
 - [ ] `images/rooms/laboratorio.png`
 - [ ] `images/rooms/sala-juntas.png`
@@ -196,6 +380,8 @@ Pixel art damaged wooden picture frame, 16-bit style. Cracked and worn. Warning 
 - [ ] `images/rooms/archivo.png`
 - [ ] `images/rooms/oficina.png`
 - [ ] `images/rooms/galeria.png`
+
+### NPCs
 - [ ] `images/npcs/conde.png`
 - [ ] `images/npcs/mayordomo.png`
 - [ ] `images/npcs/alquimista.png`
@@ -203,6 +389,8 @@ Pixel art damaged wooden picture frame, 16-bit style. Cracked and worn. Warning 
 - [ ] `images/npcs/bibliotecario.png`
 - [ ] `images/npcs/detective.png`
 - [ ] `images/npcs/curadora.png`
+
+### Objetos/UI
 - [ ] `images/objects/evidencia.png`
 - [ ] `images/objects/distractor.png`
 - [ ] `images/ui/heart.png`
@@ -210,3 +398,31 @@ Pixel art damaged wooden picture frame, 16-bit style. Cracked and worn. Warning 
 - [ ] `images/ui/inventory.png`
 - [ ] `images/frames/frame-correct.png`
 - [ ] `images/frames/frame-incorrect.png`
+
+### Adornos/Muebles
+- [ ] `images/furniture/plant.png` (🪴)
+- [ ] `images/furniture/couch.png` (🛋️)
+- [ ] `images/furniture/candle.png` (🕯️)
+- [ ] `images/furniture/shield.png` (🛡️)
+- [ ] `images/furniture/vase.png` (🏺)
+- [ ] `images/furniture/filing-cabinet.png` (🗄️)
+- [ ] `images/furniture/cobweb.png` (🕸️)
+- [ ] `images/furniture/crate.png` (📦)
+- [ ] `images/furniture/scroll-decor.png` (📜)
+- [ ] `images/furniture/alembic.png` (⚗️)
+- [ ] `images/furniture/test-tube.png` (🧪)
+- [ ] `images/furniture/ruler.png` (📐)
+- [ ] `images/furniture/microscope.png` (🔬)
+- [ ] `images/furniture/telescope.png` (🔭)
+- [ ] `images/furniture/dna-helix.png` (🧬)
+- [ ] `images/furniture/abacus.png` (🧮)
+- [ ] `images/furniture/painting.png` (🖼️)
+- [ ] `images/furniture/palette.png` (🎨)
+- [ ] `images/furniture/crown.png` (👑)
+- [ ] `images/furniture/briefcase.png` (💼)
+- [ ] `images/furniture/trophy.png` (🏆)
+- [ ] `images/furniture/chair.png` (🪑)
+- [ ] `images/furniture/swords.png` (⚔️)
+- [ ] `images/furniture/bookshelf.png` (📚)
+- [ ] `images/furniture/open-book.png` (📖)
+- [ ] `images/furniture/castle-ornament.png` (🏰)

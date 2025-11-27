@@ -125,10 +125,10 @@ const RoomManager = {
             const doorIcon = document.createElement('div');
             doorIcon.className = 'door-css';
 
-            // Posicionar icono según dirección
+            // Posicionar icono según dirección (centrado en la puerta)
             if (direction === 'north' || direction === 'south') {
-                doorIcon.style.left = `${doorPos.x + doorPos.width / 2 - 15}px`;
-                doorIcon.style.top = direction === 'north' ? '10px' : `${doorPos.y - 10}px`;
+                doorIcon.style.left = `${doorPos.x + doorPos.width / 2 - 30}px`;
+                doorIcon.style.top = `${doorPos.y + doorPos.height / 2 - 22}px`;
             } else {
                 doorIcon.style.left = direction === 'west' ? '10px' : `${doorPos.x - 10}px`;
                 doorIcon.style.top = `${doorPos.y + doorPos.height / 2 - 20}px`;
@@ -161,9 +161,28 @@ const RoomManager = {
         room.furniture.forEach((item, index) => {
             const furniture = document.createElement('div');
             furniture.className = 'furniture';
-            furniture.textContent = item.icon;
             furniture.style.left = `${item.x}px`;
             furniture.style.top = `${item.y}px`;
+
+            // Verificar si hay imagen para este emoji
+            const imagePath = FURNITURE_IMAGES[item.icon];
+            if (imagePath) {
+                // Usar imagen
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = item.icon;
+                img.className = 'furniture-img';
+                img.onerror = () => {
+                    // Fallback a emoji si la imagen no carga
+                    furniture.textContent = item.icon;
+                    img.remove();
+                };
+                furniture.appendChild(img);
+            } else {
+                // Fallback a emoji
+                furniture.textContent = item.icon;
+            }
+
             this.roomElement.appendChild(furniture);
         });
     },
