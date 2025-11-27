@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Misión del Conde Donador - Escape Room</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Pantalla de Login -->
+    <div id="login-screen" class="screen">
+        <div class="login-content">
+            <h1>🔒 ACCESO RESTRINGIDO</h1>
+            <p>Ingrese código de autorización de la Fundación</p>
+            <div class="input-group">
+                <input type="password" id="password-input" placeholder="Código de acceso" autocomplete="off">
+                <button id="login-btn" class="btn-primary">ACCEDER</button>
+            </div>
+            <p id="login-error" class="error-msg hidden">⛔ Código incorrecto</p>
+        </div>
+    </div>
+
+    <!-- Pantalla de Inicio -->
+    <div id="start-screen" class="screen hidden">
+        <div class="start-content">
+            <h1>🧛 La Misión del Conde Donador</h1>
+            <div class="narrative">
+                <p>El <strong>Conde Von Donativo</strong> es el mayor benefactor de Fundación Teletón.</p>
+                <p>Tiene una reunión con su junta directiva en <strong>30 minutos</strong> y necesita un <strong>reporte
+                        ejecutivo con evidencia sólida</strong> para aprobar una donación de $10 millones de pesos.</p>
+                <p>Eres un <strong>analista de datos</strong> que debe recorrer la mansión recolectando la evidencia
+                    correcta:</p>
+                <ul>
+                    <li>📊 Estadísticas descriptivas</li>
+                    <li>📈 Pruebas de hipótesis</li>
+                    <li>📋 Análisis estratégico (FODA/PESTEL)</li>
+                    <li>🎯 KPIs y métricas</li>
+                    <li>📉 Visualizaciones efectivas</li>
+                </ul>
+                <p class="warning">⚠️ ¡CUIDADO! No todo lo que brilla es oro. Hay documentos con errores que harían
+                    quedar mal al Conde.</p>
+            </div>
+            <div class="controls-info">
+                <h3>Controles</h3>
+                <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> -
+                    Mover</p>
+                <p><kbd>E</kbd> o <kbd>Espacio</kbd> - Interactuar</p>
+            </div>
+            <button id="start-btn" class="btn-primary">🚀 Comenzar Misión</button>
+            <div class="best-time" id="best-time-display"></div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Juego -->
+    <div id="game-screen" class="screen hidden">
+        <!-- HUD Superior -->
+        <div id="hud">
+            <div class="hud-left">
+                <span id="timer">⏰ 30:00</span>
+            </div>
+            <div class="hud-center">
+                <span id="location">📍 Gran Vestíbulo</span>
+            </div>
+            <div class="hud-right">
+                <span id="evidence-count">📦 0/8</span>
+                <span id="error-count">⚠️ 0/3</span>
+                <button id="mute-btn" class="btn-icon">🔊</button>
+            </div>
+        </div>
+
+        <!-- Área de Juego -->
+        <div id="game-container">
+            <div id="room">
+                <!-- Objetos de la habitación se generan dinámicamente -->
+            </div>
+            <div id="player">🧑‍💼</div>
+        </div>
+
+        <!-- Inventario -->
+        <div id="inventory">
+            <h3>📋 Evidencias Recolectadas</h3>
+            <div id="inventory-items">
+                <!-- Items se agregan dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Interacción -->
+    <div id="interaction-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-icon">📄</span>
+                <h2 id="modal-title">Documento</h2>
+            </div>
+            <div id="modal-body">
+                <!-- Contenido del documento -->
+            </div>
+            <div class="modal-actions">
+                <button id="btn-collect" class="btn-success">✓ Recoger</button>
+                <button id="btn-leave" class="btn-secondary">✗ Dejar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Diálogo NPC -->
+    <div id="dialog-modal" class="modal hidden">
+        <div class="modal-content dialog-box">
+            <div class="npc-header">
+                <span id="npc-icon">🤵</span>
+                <span id="npc-name">Mayordomo</span>
+            </div>
+            <p id="dialog-text"></p>
+            <button id="btn-close-dialog" class="btn-secondary">Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Feedback -->
+    <div id="feedback-modal" class="modal hidden">
+        <div class="modal-content feedback-box">
+            <span id="feedback-icon">✓</span>
+            <p id="feedback-text"></p>
+        </div>
+    </div>
+
+    <!-- Pantalla de Victoria -->
+    <div id="victory-screen" class="screen hidden">
+        <div class="end-content victory">
+            <h1>🏆 ¡MISIÓN CUMPLIDA!</h1>
+            <div class="conde-message">
+                <span class="conde-icon">🧛</span>
+                <div class="speech-bubble">
+                    <p><strong>CONDE VON DONATIVO:</strong></p>
+                    <p>"¡Extraordinario! Este reporte tiene:</p>
+                    <ul>
+                        <li>✓ Datos descriptivos sólidos</li>
+                        <li>✓ Pruebas estadísticas rigurosas</li>
+                        <li>✓ Análisis estratégico fundamentado</li>
+                        <li>✓ Visualizaciones que comunican</li>
+                    </ul>
+                    <p>La junta aprobó los <strong>$10 millones</strong>.</p>
+                    <p>¡Teletón recibirá la donación!"</p>
+                </div>
+            </div>
+            <div class="stats">
+                <p>⏱️ Tiempo: <span id="final-time">--:--</span></p>
+                <p>⚠️ Errores: <span id="final-errors">0</span>/3</p>
+            </div>
+            <button id="play-again-victory" class="btn-primary">🔄 Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de Derrota por Tiempo -->
+    <div id="defeat-time-screen" class="screen hidden">
+        <div class="end-content defeat">
+            <h1>💀 GAME OVER</h1>
+            <div class="conde-message">
+                <span class="conde-icon">🧛</span>
+                <div class="speech-bubble">
+                    <p><strong>CONDE VON DONATIVO:</strong></p>
+                    <p>"La junta se fue. Sin evidencia a tiempo, no hay donación.</p>
+                    <p>Los niños de Teletón tendrán que esperar otro año para ese equipo de rehabilitación..."</p>
+                </div>
+            </div>
+            <button id="play-again-time" class="btn-primary">🔄 Intentar de Nuevo</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de Derrota por Errores -->
+    <div id="defeat-errors-screen" class="screen hidden">
+        <div class="end-content defeat">
+            <h1>💀 GAME OVER</h1>
+            <div class="conde-message">
+                <span class="conde-icon">🧛</span>
+                <div class="speech-bubble">
+                    <p><strong>CONDE VON DONATIVO:</strong></p>
+                    <p>"¿Gráficos 3D? ¿Rumores sin fuente? ¿Correlación confundida con causa?</p>
+                    <p>La junta perdió la confianza en el análisis.</p>
+                    <p>La donación ha sido <strong>CANCELADA</strong>."</p>
+                </div>
+            </div>
+            <button id="play-again-errors" class="btn-primary">🔄 Intentar de Nuevo</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/dialog.js"></script>
+    <script src="js/rooms.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/game.js"></script>
+</body>
+
+</html>
