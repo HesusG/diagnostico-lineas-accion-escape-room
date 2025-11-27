@@ -185,12 +185,33 @@ const Player = {
     // Verificar si está en una puerta
     checkDoors() {
         const currentRoom = ROOMS[Game.currentRoom];
-        if (!currentRoom || !currentRoom.doorPositions) return;
+        if (!currentRoom) return;
 
         const playerCenter = {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2
         };
+
+        // Manejar puertas personalizadas (Pasillo)
+        if (currentRoom.customDoors) {
+            currentRoom.customDoors.forEach(door => {
+                // Verificar si el jugador está en la zona de la puerta
+                if (playerCenter.x >= door.x &&
+                    playerCenter.x <= door.x + door.width &&
+                    playerCenter.y >= door.y &&
+                    playerCenter.y <= door.y + door.height) {
+
+                    const targetRoom = door.id;
+                    if (targetRoom && ROOMS[targetRoom]) {
+                        this.enterRoom(targetRoom, this.getOppositeDirection(currentRoom.id, targetRoom));
+                    }
+                }
+            });
+            return;
+        }
+
+        // Manejar puertas estándar
+        if (!currentRoom.doorPositions) return;
 
         for (const [direction, doorPos] of Object.entries(currentRoom.doorPositions)) {
             if (!doorPos) continue;
@@ -207,6 +228,25 @@ const Player = {
                 }
             }
         }
+    },
+
+    // Obtener dirección opuesta para entradas desde pasillo
+    getOppositeDirection(fromRoom, toRoom) {
+        // Si venimos del pasillo, determinar desde qué dirección entrar
+        if (fromRoom === 'pasillo') {
+            // El pasillo siempre conecta por el norte para salas superiores
+            // y por el sur para salas inferiores y vestíbulo
+            const upperRooms = ['oficina', 'sala-juntas', 'biblioteca'];
+            const lowerRooms = ['laboratorio', 'archivo', 'galeria', 'vestibulo'];
+
+            if (upperRooms.includes(toRoom)) {
+                return 'south'; // Entrar desde el sur
+            } else if (lowerRooms.includes(toRoom)) {
+                return 'north'; // Entrar desde el norte
+            }
+        }
+        // Si vamos hacia el pasillo, entrar desde cualquier lado
+        return 'north';
     },
 
     // Entrar a una habitación

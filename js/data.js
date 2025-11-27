@@ -794,20 +794,20 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/archivo.png',
         doors: {
-            north: 'pasillo',
-            south: null,
+            north: null,
+            south: 'pasillo',
             east: null,
             west: null
         },
         doorPositions: {
-            north: { x: 384, y: 0, width: 80, height: 40 }
+            south: { x: 384, y: 460, width: 80, height: 40 }
         },
         walls: [
-            { x: 0, y: 0, width: 350, height: 40 },
-            { x: 450, y: 0, width: 350, height: 40 },
+            { x: 0, y: 0, width: 800, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 800, height: 40 }
+            { x: 0, y: 460, width: 350, height: 40 },
+            { x: 450, y: 460, width: 350, height: 40 }
         ],
         furniture: [
             { icon: '🗄️', x: 100, y: 100 },
@@ -830,20 +830,20 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/laboratorio.png',
         doors: {
-            north: 'pasillo',
-            south: null,
+            north: null,
+            south: 'pasillo',
             east: null,
             west: null
         },
         doorPositions: {
-            north: { x: 384, y: 0, width: 80, height: 40 }
+            south: { x: 384, y: 460, width: 80, height: 40 }
         },
         walls: [
-            { x: 0, y: 0, width: 350, height: 40 },
-            { x: 450, y: 0, width: 350, height: 40 },
+            { x: 0, y: 0, width: 800, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 800, height: 40 }
+            { x: 0, y: 460, width: 350, height: 40 },
+            { x: 450, y: 460, width: 350, height: 40 }
         ],
         furniture: [
             { icon: '⚗️', x: 100, y: 80 },
@@ -864,20 +864,20 @@ const ROOMS = {
         hasImage: true,
         imagePath: 'images/rooms/galeria.png',
         doors: {
-            north: 'pasillo',
-            south: null,
+            north: null,
+            south: 'pasillo',
             east: null,
             west: null
         },
         doorPositions: {
-            north: { x: 384, y: 0, width: 80, height: 40 }
+            south: { x: 384, y: 460, width: 80, height: 40 }
         },
         walls: [
-            { x: 0, y: 0, width: 350, height: 40 },
-            { x: 450, y: 0, width: 350, height: 40 },
+            { x: 0, y: 0, width: 800, height: 40 },
             { x: 0, y: 0, width: 40, height: 500 },
             { x: 760, y: 0, width: 40, height: 500 },
-            { x: 0, y: 460, width: 800, height: 40 }
+            { x: 0, y: 460, width: 350, height: 40 },
+            { x: 450, y: 460, width: 350, height: 40 }
         ],
         furniture: [
             { icon: '🖼️', x: 60, y: 80 },
@@ -1004,12 +1004,14 @@ const ROOMS = {
         },
         // Sobreescribimos lógica de puertas estándar para este hub
         customDoors: [
-            { id: 'vestibulo', x: 50, y: 460, width: 80, height: 40, label: 'R' },
-            { id: 'oficina', x: 150, y: 0, width: 80, height: 40, label: '1' },
+            // Fila superior (Norte): R, 1, 3, 5
+            { id: 'vestibulo', x: 150, y: 0, width: 80, height: 40, label: 'R' },
+            { id: 'oficina', x: 360, y: 0, width: 80, height: 40, label: '1' },
+            { id: 'sala-juntas', x: 570, y: 0, width: 80, height: 40, label: '3' },
+            { id: 'biblioteca', x: 50, y: 0, width: 80, height: 40, label: '5' },
+            // Fila inferior (Sur): 2, 4, 6
             { id: 'laboratorio', x: 150, y: 460, width: 80, height: 40, label: '2' },
-            { id: 'sala-juntas', x: 360, y: 0, width: 80, height: 40, label: '3' },
             { id: 'archivo', x: 360, y: 460, width: 80, height: 40, label: '4' },
-            { id: 'biblioteca', x: 570, y: 0, width: 80, height: 40, label: '5' },
             { id: 'galeria', x: 570, y: 460, width: 80, height: 40, label: '6' }
         ],
         doorPositions: {}, // Se usará customDoors en render

@@ -8,6 +8,7 @@ const Game = {
     currentRoom: 'vestibulo',
     collectedObjects: new Set(),
     gameLoopId: null,
+    mayordomoGreeted: false,
 
     // Inicializar juego
     init() {
@@ -54,11 +55,11 @@ const Game = {
         // Botón de login
         const loginBtn = document.getElementById('login-btn');
         const passwordInput = document.getElementById('password-input');
-        
+
         if (loginBtn) {
             loginBtn.addEventListener('click', () => this.checkPassword());
         }
-        
+
         if (passwordInput) {
             passwordInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') this.checkPassword();
@@ -70,7 +71,7 @@ const Game = {
     checkPassword() {
         const input = document.getElementById('password-input');
         const errorMsg = document.getElementById('login-error');
-        
+
         if (input.value === 'Teleton25') {
             this.showScreen('start-screen');
             // Reproducir sonido de éxito si es posible (aunque el audio requiere interacción previa)
@@ -78,7 +79,7 @@ const Game = {
             errorMsg.classList.remove('hidden');
             input.value = '';
             input.focus();
-            
+
             // Ocultar error después de unos segundos
             setTimeout(() => {
                 errorMsg.classList.add('hidden');

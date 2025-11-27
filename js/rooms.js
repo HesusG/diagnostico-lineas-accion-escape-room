@@ -45,6 +45,22 @@ const RoomManager = {
         // Renderizar NPCs
         this.renderNPCs(roomId);
 
+        // Verificar si es la primera vez en el vestíbulo y activar glow del mayordomo
+        if (roomId === 'vestibulo' && !Game.mayordomoGreeted) {
+            setTimeout(() => {
+                const mayordomo = document.getElementById('npc-mayordomo');
+                if (mayordomo) {
+                    mayordomo.classList.add('glow');
+
+                    // Añadir burbuja de diálogo
+                    const bubble = document.createElement('div');
+                    bubble.className = 'speech-bubble';
+                    bubble.textContent = '¡Ven, acércate a mí!';
+                    mayordomo.appendChild(bubble);
+                }
+            }, 500);
+        }
+
         // Renderizar objetos (evidencias y distractores)
         this.renderObjects(roomId);
 
@@ -65,28 +81,26 @@ const RoomManager = {
                 doorZone.style.width = `${door.width}px`;
                 doorZone.style.height = `${door.height}px`;
 
-                // Icono de puerta
+                // Icono de puerta CSS
                 const doorIcon = document.createElement('div');
-                doorIcon.className = 'door';
-                doorIcon.textContent = '🚪';
+                doorIcon.className = 'door-css';
 
-                // Etiqueta de puerta (R, 1, 2, etc)
-                if (door.label) {
-                    const label = document.createElement('span');
-                    label.textContent = door.label;
-                    label.style.position = 'absolute';
-                    label.style.top = '-20px';
-                    label.style.left = '50%';
-                    label.style.transform = 'translateX(-50%)';
-                    label.style.color = '#fff';
-                    label.style.fontWeight = 'bold';
-                    label.style.textShadow = '1px 1px 0 #000';
-                    doorIcon.appendChild(label);
+                // Etiqueta de puerta - Posicionada según ubicación
+                const label = document.createElement('div');
+                label.className = 'door-label';
+                // Si la puerta está arriba (y < 100), poner etiqueta abajo (top)
+                // Si está abajo (y > 400), poner etiqueta arriba (bottom)
+                if (door.y < 100) {
+                    label.classList.add('door-label-top');
+                } else {
+                    label.classList.add('door-label-bottom');
                 }
+                label.textContent = door.label || 'Sala';
+                doorZone.appendChild(label);
 
-                // Posicionar icono
-                doorIcon.style.left = `${door.x + door.width / 2 - 16}px`;
-                doorIcon.style.top = `${door.y + door.height / 2 - 16}px`;
+                // Posicionar icono (centrado en la zona)
+                doorIcon.style.left = `${door.x + door.width / 2 - 30}px`;
+                doorIcon.style.top = `${door.y + door.height / 2 - 22}px`;
 
                 this.roomElement.appendChild(doorZone);
                 this.roomElement.appendChild(doorIcon);
@@ -107,18 +121,17 @@ const RoomManager = {
             doorZone.style.width = `${doorPos.width}px`;
             doorZone.style.height = `${doorPos.height}px`;
 
-            // Icono de puerta
+            // Puerta CSS
             const doorIcon = document.createElement('div');
-            doorIcon.className = 'door';
-            doorIcon.textContent = '🚪';
+            doorIcon.className = 'door-css';
 
             // Posicionar icono según dirección
             if (direction === 'north' || direction === 'south') {
-                doorIcon.style.left = `${doorPos.x + doorPos.width / 2 - 16}px`;
-                doorIcon.style.top = direction === 'north' ? '5px' : `${doorPos.y - 5}px`;
+                doorIcon.style.left = `${doorPos.x + doorPos.width / 2 - 15}px`;
+                doorIcon.style.top = direction === 'north' ? '10px' : `${doorPos.y - 10}px`;
             } else {
-                doorIcon.style.left = direction === 'west' ? '5px' : `${doorPos.x - 5}px`;
-                doorIcon.style.top = `${doorPos.y + doorPos.height / 2 - 16}px`;
+                doorIcon.style.left = direction === 'west' ? '10px' : `${doorPos.x - 10}px`;
+                doorIcon.style.top = `${doorPos.y + doorPos.height / 2 - 20}px`;
             }
 
             this.roomElement.appendChild(doorZone);
@@ -198,6 +211,17 @@ const RoomManager = {
                 );
 
                 if (dist <= GAME_CONSTANTS.INTERACTION_DISTANCE * 1.5) { // Un poco más permisivo con click
+                    // Reproducir sonido de Animal Crossing
+                    AudioManager.playInteractionSound();
+
+                    // Remover glow si es el mayordomo
+                    if (npc.id === 'mayordomo' && !Game.mayordomoGreeted) {
+                        Game.mayordomoGreeted = true;
+                        npcElement.classList.remove('glow');
+                        const bubble = npcElement.querySelector('.speech-bubble');
+                        if (bubble) bubble.remove();
+                    }
+
                     if (npc.isCondeForDelivery) {
                         if (DialogManager.showDeliveryDialog()) {
                             Game.victory();
@@ -355,14 +379,14 @@ const RoomManager = {
         };
 
         // Ajustar coordenadas para centrar
-        const offsetX = 15;
-        const offsetY = 25;
-        const scale = 30;
+        const offsetX = 8;
+        const offsetY = 12;
+        const scale = 20;
 
         // Dibujar líneas de conexión (H-pattern)
         const ctx = document.createElement('canvas');
-        ctx.width = 150;
-        ctx.height = 150;
+        ctx.width = 120;
+        ctx.height = 100;
         ctx.style.position = 'absolute';
         ctx.style.top = '0';
         ctx.style.left = '0';
@@ -408,7 +432,7 @@ const RoomManager = {
             roomDiv.style.display = 'flex';
             roomDiv.style.justifyContent = 'center';
             roomDiv.style.alignItems = 'center';
-            roomDiv.style.fontSize = '10px';
+            roomDiv.style.fontSize = '8px';
             roomDiv.style.color = '#fff';
             roomDiv.textContent = pos.label;
             roomDiv.style.zIndex = '1';

@@ -197,6 +197,33 @@ const AudioManager = {
         osc.stop(this.context.currentTime + 0.2);
     },
 
+    // Sonido tipo Animal Crossing al acercarse a NPC
+    playInteractionSound() {
+        if (!this.context || this.muted) return;
+
+        const now = this.context.currentTime;
+
+        // Crear un tono rápido y agudo característico de Animal Crossing
+        const frequencies = [659.25, 783.99]; // E5, G5
+
+        frequencies.forEach((freq, i) => {
+            const osc = this.context.createOscillator();
+            const gain = this.context.createGain();
+
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, now + i * 0.05);
+
+            gain.gain.setValueAtTime(0.08, now + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.05 + 0.08);
+
+            osc.connect(gain);
+            gain.connect(this.context.destination);
+
+            osc.start(now + i * 0.05);
+            osc.stop(now + i * 0.05 + 0.1);
+        });
+    },
+
     // Sonido de cambio de habitación
     playDoorOpen() {
         if (!this.context || this.muted) return;
