@@ -56,10 +56,17 @@
         <div class="start-content-wide">
             <div class="start-left">
                 <h1>La Misión del Conde Donador</h1>
+                <button id="start-btn" class="btn-primary btn-large">🚀 Comenzar Misión</button>
+                <div class="resolution-help">
+                    <p>💡 <strong>Tip:</strong> Si no ves bien el juego completo, usa el botón 🖥️ en la esquina
+                        superior derecha durante el juego.</p>
+                </div>
                 <div class="narrative">
                     <p>El <strong>Conde Von Donativo</strong> es el mayor benefactor de Fundación Teletón.</p>
-                    <p>Tiene una reunión con su junta directiva en <strong>30 minutos</strong> y necesita un <strong>reporte
-                            ejecutivo con evidencia sólida</strong> para aprobar una donación de $10 millones de pesos.</p>
+                    <p>Tiene una reunión con su junta directiva en <strong>30 minutos</strong> y necesita un
+                        <strong>reporte
+                            ejecutivo con evidencia sólida</strong> para aprobar una donación de $10 millones de pesos.
+                    </p>
                     <p>Eres un <strong>analista de datos</strong> que debe recorrer la mansión recolectando la evidencia
                         correcta:</p>
                     <ul>
@@ -74,16 +81,18 @@
                 </div>
                 <div class="controls-info">
                     <h3>Controles</h3>
-                    <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> -
-                        Mover</p>
-                    <p><kbd>E</kbd> o <kbd>Espacio</kbd> - Interactuar</p>
+                    <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o
+                        <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> -
+                        Mover
+                    </p>
+                    <p>Acércate a NPCs y objetos para interactuar automáticamente</p>
                 </div>
-                <button id="start-btn" class="btn-primary">🚀 Comenzar Misión</button>
                 <div class="best-time" id="best-time-display"></div>
             </div>
             <div class="start-right">
                 <div class="start-image-placeholder">
-                    <img src="images/ui/conde_start.png" alt="Conde Von Donativo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <img src="images/ui/conde_start.png" alt="Conde Von Donativo"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="image-placeholder-text">
                         <span>🏰</span>
                         <p>Imagen del Conde</p>
@@ -106,8 +115,14 @@
             <div class="hud-right">
                 <span id="evidence-count">📦 0/8</span>
                 <span id="error-count">⚠️ 0/3</span>
+                <button id="resolution-btn" class="btn-icon" title="Cambiar Resolución">🖥️</button>
                 <button id="mute-btn" class="btn-icon">🔊</button>
             </div>
+        </div>
+
+        <!-- Hint de Navegación -->
+        <div id="navigation-hint">
+            <span id="nav-hint-text">🎯 Ve al Pasillo Central</span>
         </div>
 
         <!-- Minimap -->
@@ -124,7 +139,8 @@
                 <!-- Objetos de la habitación se generan dinámicamente -->
             </div>
             <div id="player">
-                <img id="player-sprite" src="images/player/personaje_hombre.png" alt="Player" onerror="this.style.display='none'; this.parentElement.querySelector('.player-emoji').style.display='block';">
+                <img id="player-sprite" src="images/player/personaje_hombre.png" alt="Player"
+                    onerror="this.style.display='none'; this.parentElement.querySelector('.player-emoji').style.display='block';">
                 <span class="player-emoji" style="display:none;">🧑‍💼</span>
             </div>
         </div>
@@ -242,9 +258,11 @@
     <!-- Scripts -->
     <script src="js/data.js"></script>
     <script src="js/audio.js"></script>
-    <script src="js/timer.js"></script>
-    <script src="js/inventory.js"></script>
     <script src="js/dialog.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/minimap.js"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/rooms.js"></script>
     <script src="js/player.js"></script>
     <script src="js/game.js"></script>

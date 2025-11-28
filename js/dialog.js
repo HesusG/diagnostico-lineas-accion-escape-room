@@ -253,9 +253,11 @@ const DialogManager = {
         }
 
         // Si había un diálogo multi-página, marcar NPC como visitado
-        if (this.currentNPC && this.currentDialogPages.length > 0) {
+        // IMPORTANTE: Marcar siempre si hay un NPC actual, no solo si tiene páginas
+        if (this.currentNPC) {
             const alreadyVisited = Game.npcProgress.visited.has(this.currentNPC.id);
             if (!alreadyVisited) {
+                console.log(`Marcando NPC ${this.currentNPC.id} como visitado al cerrar diálogo`);
                 Game.markNPCVisited(this.currentNPC.id);
             }
         }
@@ -296,7 +298,12 @@ const DialogManager = {
         // Configurar contenido
         icon.textContent = object.icon;
         title.textContent = object.name;
-        body.innerHTML = object.content;
+
+        // Parsear markdown simple (tablas)
+        let content = object.content;
+        content = this.parseMarkdown(content);
+
+        body.innerHTML = content;
 
         // Mostrar modal
         modal.classList.remove('hidden');
@@ -375,9 +382,18 @@ Buscad al sabio y aprended de su sabiduría.`
 
     // Cerrar todos los modales
     closeAll() {
+        // Verificar si el modal de diálogo está abierto y cerrarlo correctamente
+        // para asegurar que se guarde el progreso
+        const dialogModal = document.getElementById('dialog-modal');
+        if (dialogModal && !dialogModal.classList.contains('hidden')) {
+            this.closeDialog();
+        }
+
+        // Cerrar otros modales
         document.querySelectorAll('.modal').forEach(modal => {
             modal.classList.add('hidden');
         });
+
         this.isOpen = false;
         this.currentModal = null;
         this.currentObject = null;
@@ -435,5 +451,53 @@ Habéis recolectado <strong>${Inventory.collectedEvidences.length}</strong> hast
     // Verificar si hay modal abierto
     hasOpenModal() {
         return this.isOpen;
+    },
+
+    // Parser simple de Markdown para tablas
+    parseMarkdown(text) {
+        if (!text) return '';
+
+        // Reemplazar tablas Markdown
+        // Busca bloques que parecen tablas: | col | col |
+        // Permite espacios antes del primer pipe por si hay indentación
+        const tableRegex = /(\s*)\|(.+)\|\n\s*\|([-:| ]+)\|\n((?:(?:\s*)\|.*\|\n?)+)/g;
+
+        return text.replace(tableRegex, (match, indent, header, separator, body) => {
+            const headers = header.split('|').map(h => h.trim()).filter(h => h);
+            const rows = body.trim().split('\n');
+
+            let html = '<table><thead><tr>';
+            headers.forEach(h => {
+                html += `<th>${h}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            rows.forEach(row => {
+                // Ignorar líneas vacías
+                if (!row.trim()) return;
+
+                const cells = row.split('|').map(c => c.trim());
+                // El split puede generar strings vacíos al inicio/final por los pipes externos
+                // Filtramos solo si son vacíos Y están en los extremos (el regex garantiza pipes externos)
+                // Una estrategia más segura es filtrar vacíos pero cuidado con celdas vacías reales
+                // En este caso simple, asumimos que no hay celdas vacías intencionales o que el trim las mata
+                const cleanCells = cells.filter((c, i) => {
+                    // Mantener celdas intermedias aunque estén vacías, pero eliminar las de los extremos generadas por el split
+                    return i > 0 && i < cells.length - 1;
+                });
+
+                // Si el filtro anterior falló (ej. estructura diferente), fallback a filtrar todo vacío
+                const finalCells = cleanCells.length > 0 ? cleanCells : cells.filter(c => c !== '');
+
+                html += '<tr>';
+                finalCells.forEach(c => {
+                    html += `<td>${c}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        });
     }
 };

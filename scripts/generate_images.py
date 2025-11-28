@@ -314,6 +314,13 @@ IMAGES = {
             "size": (350, 450),
             "transparent": False
         }
+    },
+    "player": {
+        "player": {
+            "prompt": "Pixel art full body character sprite of young data analyst apprentice, 16-bit SNES RPG style. Young person standing with medieval scholar robes in blue and silver. Holding quill and small notebook. Determined curious expression. Adventurer satchel at side. Full body from head to feet visible. Solid green background for easy removal. Color palette: blue robes, silver trim, brown leather satchel, warm skin tones. Clean pixels, no anti-aliasing.",
+            "size": (32, 48),
+            "transparent": True
+        }
     }
 }
 

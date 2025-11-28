@@ -213,13 +213,19 @@ const RoomManager = {
                 npcElement.textContent = npc.icon;
             }
 
-            npcElement.style.left = `${npc.position.x}px`;
-            npcElement.style.top = `${npc.position.y}px`;
+            // Ajustar posición para centrar el sprite (64px de ancho/alto)
+            // Restar la mitad del tamaño del sprite para centrarlo
+            const spriteSize = 64;
+            const offsetX = imagePath ? spriteSize / 2 : 0;
+            const offsetY = imagePath ? spriteSize / 2 : 0;
+
+            npcElement.style.left = `${npc.position.x - offsetX}px`;
+            npcElement.style.top = `${npc.position.y - offsetY}px`;
 
             // Hint de interacción
             const hint = document.createElement('span');
             hint.className = 'interaction-hint';
-            hint.textContent = '[E] Hablar';
+            hint.textContent = '[Espacio] Hablar';
             npcElement.appendChild(hint);
 
             // Etiqueta de nombre
@@ -283,83 +289,61 @@ const RoomManager = {
         }
     },
 
-    // Renderizar objetos recolectables
+    // Renderizar evidencias y distractores
     renderObjects(roomId) {
-        // Renderizar evidencias
+        // Evidencias correctas
         EVIDENCES.forEach(evidence => {
             if (evidence.room !== roomId) return;
+            if (Game.collectedObjects.has(evidence.id)) return;
 
-            const objectElement = this.createObjectElement(evidence, 'evidence');
-            if (objectElement) {
-                this.roomElement.appendChild(objectElement);
-            }
+            const objElement = document.createElement('div');
+            objElement.className = 'room-object evidence';
+            objElement.id = `obj-${evidence.id}`;
+            objElement.textContent = evidence.icon;
+            objElement.style.left = `${evidence.position.x}px`;
+            objElement.style.top = `${evidence.position.y}px`;
+
+            // Hint de interacción
+            const hint = document.createElement('span');
+            hint.className = 'interaction-hint';
+            hint.textContent = '[E] Examinar';
+            objElement.appendChild(hint);
+
+            // Click para recolectar
+            objElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                Player.tryCollectObject(evidence.id);
+            });
+
+            this.roomElement.appendChild(objElement);
         });
 
-        // Renderizar distractores
+        // Distractores
         DISTRACTORS.forEach(distractor => {
             if (distractor.room !== roomId) return;
+            if (Game.collectedObjects.has(distractor.id)) return;
 
-            const objectElement = this.createObjectElement(distractor, 'distractor');
-            if (objectElement) {
-                this.roomElement.appendChild(objectElement);
-            }
+            const objElement = document.createElement('div');
+            objElement.className = 'room-object distractor';
+            objElement.id = `obj-${distractor.id}`;
+            objElement.textContent = distractor.icon;
+            objElement.style.left = `${distractor.position.x}px`;
+            objElement.style.top = `${distractor.position.y}px`;
+
+            // Hint de interacción
+            const hint = document.createElement('span');
+            hint.className = 'interaction-hint';
+            hint.textContent = '[Espacio] Examinar';
+            objElement.appendChild(hint);
+
+            // Click para recolectar
+            objElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                Player.tryCollectObject(distractor.id);
+            });
+
+            this.roomElement.appendChild(objElement);
         });
-    },
-
-    // Crear elemento de objeto
-    createObjectElement(object, type) {
-        // Verificar si ya fue recolectado
-        if (Game.collectedObjects && Game.collectedObjects.has(object.id)) {
-            return null;
-        }
-
-        const element = document.createElement('div');
-        element.className = `room-object ${type}`;
-        element.id = `object-${object.id}`;
-        element.textContent = object.icon;
-        element.style.left = `${object.position.x}px`;
-        element.style.top = `${object.position.y}px`;
-
-        // Hint de interacción
-        const hint = document.createElement('span');
-        hint.className = 'interaction-hint';
-        hint.textContent = '[E] Examinar';
-        element.appendChild(hint);
-
-        // Data attributes
-        element.dataset.objectId = object.id;
-        element.dataset.objectType = type;
-
-        // Click para interactuar
-        element.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const player = Player;
-            const dist = player.getDistance(
-                { x: player.x + player.width / 2, y: player.y + player.height / 2 },
-                { x: object.position.x + 14, y: object.position.y + 14 }
-            );
-
-            if (dist <= GAME_CONSTANTS.INTERACTION_DISTANCE * 1.5) {
-                if (type === 'evidence') {
-                    DialogManager.showObjectInteraction(object, true);
-                } else if (type === 'distractor') {
-                    DialogManager.showObjectInteraction(object, false);
-                }
-            } else {
-                // Feedback visual si está lejos
-                const hint = element.querySelector('.interaction-hint');
-                if (hint) {
-                    hint.textContent = '¡Acércate más!';
-                    hint.style.opacity = '1';
-                    setTimeout(() => {
-                        hint.textContent = '[E] Examinar';
-                        hint.style.opacity = '';
-                    }, 1000);
-                }
-            }
-        });
-
-        return element;
     },
 
     // Marcar objeto como recolectado

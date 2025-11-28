@@ -31,6 +31,11 @@ const Player = {
     setupControls() {
         // Keydown
         document.addEventListener('keydown', (e) => {
+            // Ignorar si está escribiendo en un input
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+
             if (DialogManager.hasOpenModal()) return;
 
             switch (e.key.toLowerCase()) {
@@ -102,6 +107,104 @@ const Player = {
         // Intentar mover
         if (dx !== 0 || dy !== 0) {
             this.tryMove(dx, dy);
+        }
+
+        // Verificar proximidad para interacciones automáticas
+        this.checkProximityInteractions();
+    },
+
+    // Verificar proximidad con NPCs y objetos para mostrar hints
+    checkProximityInteractions() {
+        const playerCenter = {
+            x: this.x + this.width / 2,
+            y: this.y + this.height / 2
+        };
+
+        // Verificar NPCs
+        for (const npc of Object.values(NPCS)) {
+            if (npc.room !== Game.currentRoom) continue;
+
+            const npcElement = document.getElementById(`npc-${npc.id}`);
+            if (!npcElement) continue;
+
+            const dist = this.getDistance(playerCenter, {
+                x: npc.position.x,
+                y: npc.position.y
+            });
+
+            const hint = npcElement.querySelector('.interaction-hint');
+            if (dist <= GAME_CONSTANTS.INTERACTION_DISTANCE) {
+                if (hint) {
+                    hint.style.opacity = '1';
+                    hint.classList.add('visible');
+                }
+
+                // Auto-interactuar la primera vez
+                const interactionKey = `npc-${npc.id}`;
+                if (!Game.interactedWith.has(interactionKey)) {
+                    Game.interactedWith.add(interactionKey);
+                    // Pequeño delay para que no sea instantáneo
+                    setTimeout(() => {
+                        if (npc.isCondeForDelivery) {
+                            if (DialogManager.showDeliveryDialog()) {
+                                Game.victory();
+                            }
+                        } else {
+                            AudioManager.playInteractionSound();
+                            if (npc.id === 'mayordomo' && !Game.mayordomoGreeted) {
+                                Game.mayordomoGreeted = true;
+                                npcElement.classList.remove('glow');
+                                const bubble = npcElement.querySelector('.speech-bubble');
+                                if (bubble) bubble.remove();
+                            }
+                            DialogManager.showNPCDialog(npc);
+                        }
+                    }, 300);
+                }
+            } else {
+                if (hint) {
+                    hint.style.opacity = '0';
+                    hint.classList.remove('visible');
+                }
+            }
+        }
+
+        // Verificar objetos (evidencias y distractores)
+        const allObjects = [...EVIDENCES, ...DISTRACTORS];
+        for (const obj of allObjects) {
+            if (obj.room !== Game.currentRoom) continue;
+            if (Game.collectedObjects.has(obj.id)) continue;
+
+            const objElement = document.getElementById(`obj-${obj.id}`);
+            if (!objElement) continue;
+
+            const dist = this.getDistance(playerCenter, {
+                x: obj.position.x + 14,
+                y: obj.position.y + 14
+            });
+
+            const hint = objElement.querySelector('.interaction-hint');
+            if (dist <= GAME_CONSTANTS.INTERACTION_DISTANCE) {
+                if (hint) {
+                    hint.style.opacity = '1';
+                    hint.classList.add('visible');
+                }
+
+                // Auto-interactuar la primera vez
+                const interactionKey = `obj-${obj.id}`;
+                if (!Game.interactedWith.has(interactionKey)) {
+                    Game.interactedWith.add(interactionKey);
+                    // Pequeño delay para que no sea instantáneo
+                    setTimeout(() => {
+                        this.tryCollectObject(obj.id);
+                    }, 300);
+                }
+            } else {
+                if (hint) {
+                    hint.style.opacity = '0';
+                    hint.classList.remove('visible');
+                }
+            }
         }
     },
 

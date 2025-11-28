@@ -10,7 +10,7 @@ const GAME_CONSTANTS = {
     TOTAL_EVIDENCES: 8,
     PLAYER_SIZE: 32,
     PLAYER_SPEED: 4,
-    INTERACTION_DISTANCE: 50
+    INTERACTION_DISTANCE: 80  // Aumentado para facilitar interacciones
 };
 
 // ============================================
@@ -635,11 +635,12 @@ const NPC_IMAGES = {
 // ============================================
 const NPC_PROGRESSION = {
     // Orden en que deben visitarse los NPCs
-    order: ['mayordomo', 'cientifica', 'ejecutiva', 'bibliotecario', 'detective', 'curadora'],
+    order: ['mayordomo', 'consultor', 'cientifica', 'ejecutiva', 'bibliotecario', 'detective', 'curadora'],
 
     // Mapeo NPC → Habitación que desbloquea
     roomMap: {
         mayordomo: 'vestibulo',
+        consultor: 'oficina',
         cientifica: 'laboratorio',
         ejecutiva: 'sala-juntas',
         bibliotecario: 'biblioteca',
@@ -650,7 +651,8 @@ const NPC_PROGRESSION = {
     // Hints vagos para cuando visitan NPC fuera de orden (sin nombrar a quién ir)
     wrongOrderHints: {
         mayordomo: "No es momento de hablar conmigo aún. Primero debéis presentaros en el vestíbulo principal...",
-        cientifica: "Aún no estáis preparado para mis enseñanzas. Buscad primero al guardián de la entrada...",
+        consultor: "El orden es clave. Buscad primero al guardián de la entrada...",
+        cientifica: "Aún no estáis preparado para mis enseñanzas. Buscad primero al sabio organizador...",
         ejecutiva: "Las decisiones vienen después de entender los números. Id al laboratorio primero...",
         bibliotecario: "El conocimiento estratégico requiere primero entender las comparaciones. Visitad la sala del consejo...",
         detective: "Antes de verificar fuentes, debéis aprender sobre estrategia. La biblioteca os espera...",
@@ -809,6 +811,26 @@ El Brujo del Sesgo dejó abominaciones:
 
 Buscad el gráfico que cuente una historia clara.`
     },
+    consultor: {
+        id: 'consultor',
+        name: 'Sabio Organizador',
+        title: 'Maestro del Orden',
+        icon: '👨‍💼',
+        room: 'oficina',
+        position: { x: 400, y: 200 },
+        hasImage: false, // Usará emoji por ahora o imagen genérica si hay
+        dialog: `Bienvenidos a la oficina privada.
+
+Aquí es donde el caos se convierte en orden.
+
+<strong>Antes de analizar, debéis organizar.</strong>
+
+¿Tenéis vuestros datos limpios? ¿Están completos?
+El Brujo del Sesgo adora los datos sucios y duplicados.
+
+<strong>Consejo del Sabio:</strong>
+Limpiad vuestros datos antes de intentar encontrar patrones.`
+    },
     conde: {
         id: 'conde',
         name: 'Conde Von Donativo',
@@ -818,6 +840,7 @@ Buscad el gráfico que cuente una historia clara.`
         position: { x: 400, y: 100 },
         hasImage: true,
         imagePath: 'images/npcs/conde.png',
+        isCondeForDelivery: true, // Importante para lógica de victoria
         dialog: `Ah, mi joven analista de la Orden de los Datos.
 
 El Gran Consejo se reúne pronto y necesito evidencia irrefutable.
@@ -831,8 +854,7 @@ Recordad:
 
 La donación de <strong>10 millones de monedas de oro</strong> depende de vuestro trabajo.
 
-<em>Cuando tengáis todo, regresad a mí.</em>`,
-        isCondeForDelivery: true
+<em>Cuando tengáis todo, regresad a mí.</em>`
     }
 };
 

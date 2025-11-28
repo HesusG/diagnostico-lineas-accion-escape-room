@@ -9,6 +9,7 @@ const Game = {
     collectedObjects: new Set(),
     gameLoopId: null,
     mayordomoGreeted: false,
+    interactedWith: new Set(), // Track NPCs/objects already interacted with
 
     // Información del jugador
     playerInfo: {
@@ -32,6 +33,7 @@ const Game = {
         Player.init();
         Inventory.init();
         Timer.init();
+        NavigationHint.init();
 
         // Configurar botones
         this.setupButtons();
@@ -65,6 +67,12 @@ const Game = {
             muteBtn.addEventListener('click', () => AudioManager.toggleMute());
         }
 
+        // Botón de resolución
+        const resolutionBtn = document.getElementById('resolution-btn');
+        if (resolutionBtn) {
+            resolutionBtn.addEventListener('click', () => this.toggleResolution());
+        }
+
         // Botón de login
         const loginBtn = document.getElementById('login-btn');
         const passwordInput = document.getElementById('password-input');
@@ -81,6 +89,16 @@ const Game = {
 
         // Selección de personaje
         this.setupCharacterSelection();
+    },
+
+    // Toggle de resolución para pantallas no 16:9
+    toggleResolution() {
+        document.body.classList.toggle('scaled');
+        const btn = document.getElementById('resolution-btn');
+        if (btn) {
+            btn.textContent = document.body.classList.contains('scaled') ? '🔍' : '🖥️';
+            btn.title = document.body.classList.contains('scaled') ? 'Resolución Normal' : 'Reducir Escala';
+        }
     },
 
     // Configurar selección de personaje
@@ -186,6 +204,7 @@ const Game = {
 
         // Resetear estado
         this.collectedObjects = new Set();
+        this.interactedWith = new Set(); // Reset first-time interactions
         this.currentRoom = 'vestibulo';
         this.isPlaying = true;
 
@@ -251,6 +270,11 @@ const Game = {
 
         // Cambiar música según la habitación
         AudioManager.playMusicForRoom(roomId);
+
+        // Actualizar hint de navegación
+        if (window.NavigationHint) {
+            NavigationHint.update();
+        }
     },
 
     // Marcar objeto como recolectado
@@ -278,21 +302,51 @@ const Game = {
 
     // Marcar NPC como visitado y desbloquear su habitación
     markNPCVisited(npcId) {
-        if (this.npcProgress.visited.has(npcId)) return;
+        console.log(`Attempting to mark NPC visited: ${npcId}`);
 
-        this.npcProgress.visited.add(npcId);
+        // Siempre añadir a visitados para persistencia
+        if (!this.npcProgress.visited.has(npcId)) {
+            this.npcProgress.visited.add(npcId);
+            console.log(`NPC ${npcId} marked as visited.`);
+        }
 
         // Desbloquear la habitación correspondiente para recolectar objetos
         const room = NPC_PROGRESSION.roomMap[npcId];
         if (room) {
-            this.npcProgress.canCollectInRooms.add(room);
+            if (!this.npcProgress.canCollectInRooms.has(room)) {
+                this.npcProgress.canCollectInRooms.add(room);
+                console.log(`Room unlocked for collection: ${room}`);
+            }
         }
 
-        // Avanzar al siguiente paso si era el NPC correcto
+        // Verificar si debemos avanzar el paso de la historia
         const expectedNpc = NPC_PROGRESSION.order[this.npcProgress.currentStep];
+
+        // Si visitamos al NPC que esperábamos, avanzamos
         if (npcId === expectedNpc) {
             this.npcProgress.currentStep++;
+            console.log(`Story step advanced. New step: ${this.npcProgress.currentStep}`);
+
+            // Actualizar hint de navegación inmediatamente
+            if (window.NavigationHint) {
+                NavigationHint.update();
+            }
+        } else {
+            console.log(`Visited ${npcId} but expected ${expectedNpc}. Step remains ${this.npcProgress.currentStep}`);
         }
+
+        // Forzar actualización del hint por si acaso cambió algo relevante
+        if (window.NavigationHint) {
+            NavigationHint.update();
+        }
+    },
+
+    // Obtener el NPC que desbloquea una habitación
+    getUnlockerNPC(roomId) {
+        for (const [npcId, room] of Object.entries(NPC_PROGRESSION.roomMap)) {
+            if (room === roomId) return npcId;
+        }
+        return null;
     },
 
     // Verificar si puede recolectar objetos en una habitación
