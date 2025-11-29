@@ -87,16 +87,18 @@ const DialogManager = {
         // Verificar si ya fue visitado
         const alreadyVisited = Game.npcProgress.visited.has(npc.id);
 
-        // Si tiene diálogos multi-página y es primera visita
+        // Marcar como visitado inmediatamente si es el paso correcto
+        // Esto asegura que la progresión se guarde incluso si el usuario cierra el diálogo
+        if (!alreadyVisited) {
+            Game.markNPCVisited(npc.id);
+        }
+
+        // Si tiene diálogos multi-página y es primera visita (usamos el estado previo)
         if (npc.dialogPages && npc.dialogPages.length > 0 && !alreadyVisited) {
             this.showMultiPageDialog(npc, modal, npcIcon, npcName, dialogText);
         } else {
-            // Diálogo normal
+            // Diálogo normal (o repetido)
             this.showRegularDialog(npc, modal, npcIcon, npcName, dialogText);
-            // Marcar como visitado al cerrar
-            if (!alreadyVisited) {
-                Game.markNPCVisited(npc.id);
-            }
         }
     },
 
@@ -253,14 +255,8 @@ const DialogManager = {
         }
 
         // Si había un diálogo multi-página, marcar NPC como visitado
-        // IMPORTANTE: Marcar siempre si hay un NPC actual, no solo si tiene páginas
-        if (this.currentNPC) {
-            const alreadyVisited = Game.npcProgress.visited.has(this.currentNPC.id);
-            if (!alreadyVisited) {
-                console.log(`Marcando NPC ${this.currentNPC.id} como visitado al cerrar diálogo`);
-                Game.markNPCVisited(this.currentNPC.id);
-            }
-        }
+        // Si había un diálogo multi-página, ya se marcó como visitado al abrir
+        // (Logic moved to showNPCDialog)
 
         // Limpiar estado de diálogo multi-página
         this.currentDialogPages = [];
@@ -339,29 +335,30 @@ Buscad al sabio y aprended de su sabiduría.`
     collectItem() {
         if (!this.currentObject) return;
 
+        // Save the object before closing
+        const objectToCollect = this.currentObject;
+
         // Cerrar modal de interacción
         this.closeInteraction();
 
         // Procesar recolección
-        if (this.currentObject.isEvidence) {
+        if (objectToCollect.isEvidence) {
             // Es una evidencia correcta
-            Inventory.addEvidence(this.currentObject);
+            Inventory.addEvidence(objectToCollect);
 
             // Marcar como recolectado en el juego
             if (typeof Game !== 'undefined') {
-                Game.markObjectCollected(this.currentObject.id);
+                Game.markObjectCollected(objectToCollect.id);
             }
         } else {
             // Es un distractor
-            Inventory.addError(this.currentObject);
+            Inventory.addError(objectToCollect);
 
             // Marcar como recolectado
             if (typeof Game !== 'undefined') {
-                Game.markObjectCollected(this.currentObject.id);
+                Game.markObjectCollected(objectToCollect.id);
             }
         }
-
-        this.currentObject = null;
     },
 
     // Cerrar modal de interacción

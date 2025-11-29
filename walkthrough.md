@@ -1,4 +1,53 @@
+# Walkthrough - Corrección de Error de Sintaxis
+
+## ÚLTIMA CORRECCIÓN (2025-11-28)
+
+### Reposicionamiento Definitivo del Minimap
+
+**Problema anterior:**
+- El minimap estaba mal ubicado dentro del HUD, estorbando la visualización
+- No había forma de ocultarlo si molestaba
+
+**Solución implementada:**
+- Reposicionado a esquina inferior derecha con `position: fixed`
+- Coordenadas: `bottom: 120px; right: 20px`
+- Tamaño optimizado: `140px x 110px`
+- Toggle con tecla **H** para ocultar/mostrar
+- Transiciones suaves (0.3s) al ocultar/aparecer
+- Feedback de sonido al presionar H
+- Documentación actualizada en pantalla de inicio
+
+**Archivos modificados:**
+- `css/styles.css`: Nuevo posicionamiento y clase `.hidden` (líneas 637-680)
+- `js/player.js`: Event listener para tecla H y función `toggleMinimap()` (líneas 63-67, 540-551)
+- `index.html`: Documentación de control H en pantalla de inicio (línea 88)
+
+**Estado:** ✅ Funcionando perfectamente - Ubicación óptima y toggle fluido
+
+---
+
+### Error Crítico Corregido en navigation.js
+
+**Problema encontrado:**
+- La función `update()` en `navigation.js` tenía una estructura if/else rota
+- Había código de `else if` sin un `if` inicial correspondiente
+- Esto causaba errores de sintaxis JavaScript e impedía que el sistema de navegación funcionara
+
+**Solución implementada:**
+- Se reconstruyó completamente la función `update()` con lógica apropiada
+- Se agregó verificación de progreso del jugador
+- Se implementó sistema de hints que guía al jugador al siguiente NPC según su progreso
+- Se agregaron mensajes contextuales según la ubicación actual del jugador
+
+**Archivos modificados:**
+- `js/navigation.js`: Función `update()` completamente reescrita (líneas 20-77)
+
+**Estado:** ✅ Funcionando correctamente - Sin errores en consola
+
+---
+
 # Walkthrough - Embellecimiento y Login
+
 
 Se han implementado las mejoras visuales y funcionales solicitadas, manteniendo el uso de emojis pero elevando la estética a un estilo "Retro Pixel Art".
 

@@ -38,8 +38,8 @@ const Game = {
         // Configurar botones
         this.setupButtons();
 
-        // Mostrar pantalla de login
-        this.showScreen('login-screen');
+        // Mostrar pantalla de selección de personaje directamente
+        this.showScreen('character-select-screen');
 
         // Cargar mejor tiempo
         this.loadBestTime();
@@ -73,19 +73,7 @@ const Game = {
             resolutionBtn.addEventListener('click', () => this.toggleResolution());
         }
 
-        // Botón de login
-        const loginBtn = document.getElementById('login-btn');
-        const passwordInput = document.getElementById('password-input');
 
-        if (loginBtn) {
-            loginBtn.addEventListener('click', () => this.checkPassword());
-        }
-
-        if (passwordInput) {
-            passwordInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') this.checkPassword();
-            });
-        }
 
         // Selección de personaje
         this.setupCharacterSelection();
@@ -155,25 +143,7 @@ const Game = {
         }
     },
 
-    // Verificar contraseña
-    checkPassword() {
-        const input = document.getElementById('password-input');
-        const errorMsg = document.getElementById('login-error');
 
-        if (input.value === 'Teleton25') {
-            this.showScreen('character-select-screen');
-            // Reproducir sonido de éxito si es posible (aunque el audio requiere interacción previa)
-        } else {
-            errorMsg.classList.remove('hidden');
-            input.value = '';
-            input.focus();
-
-            // Ocultar error después de unos segundos
-            setTimeout(() => {
-                errorMsg.classList.add('hidden');
-            }, 2000);
-        }
-    },
 
     // Mostrar intro con lore
     showIntro() {
@@ -239,6 +209,11 @@ const Game = {
 
         // Iniciar música de la habitación actual
         AudioManager.playMusicForRoom(this.currentRoom);
+
+        // Actualizar hint de navegación
+        if (window.NavigationHint) {
+            NavigationHint.update();
+        }
     },
 
     // Loop principal del juego
@@ -328,15 +303,21 @@ const Game = {
             console.log(`Story step advanced. New step: ${this.npcProgress.currentStep}`);
 
             // Actualizar hint de navegación inmediatamente
+            console.log('About to update NavigationHint, window.NavigationHint:', window.NavigationHint);
             if (window.NavigationHint) {
+                console.log('Calling NavigationHint.update()');
                 NavigationHint.update();
+            } else {
+                console.error('NavigationHint is not available on window!');
             }
         } else {
             console.log(`Visited ${npcId} but expected ${expectedNpc}. Step remains ${this.npcProgress.currentStep}`);
         }
 
         // Forzar actualización del hint por si acaso cambió algo relevante
+        console.log('Final update check, window.NavigationHint:', window.NavigationHint);
         if (window.NavigationHint) {
+            console.log('Calling final NavigationHint.update()');
             NavigationHint.update();
         }
     },
@@ -356,8 +337,17 @@ const Game = {
 
     // Obtener el hint para cuando visitan NPC fuera de orden
     getWrongOrderHint(npcId) {
-        return NPC_PROGRESSION.wrongOrderHints[npcId] ||
-            "Aún no es momento de hablar conmigo. Buscad al sabio correcto...";
+        const currentStep = this.npcProgress.currentStep;
+        const expectedNpcId = NPC_PROGRESSION.order[currentStep];
+
+        if (!expectedNpcId) return "El destino es incierto...";
+
+        const expectedNpc = NPCS[expectedNpcId];
+        const roomData = ROOMS[expectedNpc.room];
+        const roomName = roomData ? roomData.name : expectedNpc.room;
+
+        // Mensaje dinámico y claro
+        return `Aún no es el momento. Primero debéis buscar a <strong>${expectedNpc.name}</strong> en <strong>${roomName}</strong>.`;
     },
 
     // Resetear progresión de NPCs
@@ -479,6 +469,9 @@ const Game = {
         localStorage.setItem('escapeRoom_attempts', attempts);
     }
 };
+
+// Expose Game to window
+window.Game = Game;
 
 // Iniciar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {

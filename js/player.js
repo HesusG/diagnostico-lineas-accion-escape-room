@@ -60,6 +60,11 @@ const Player = {
                     e.preventDefault();
                     this.tryInteract();
                     break;
+                case 'h':
+                    // Toggle minimap
+                    e.preventDefault();
+                    this.toggleMinimap();
+                    break;
             }
         });
 
@@ -196,7 +201,9 @@ const Player = {
                     Game.interactedWith.add(interactionKey);
                     // Pequeño delay para que no sea instantáneo
                     setTimeout(() => {
-                        this.tryCollectObject(obj.id);
+                        // Show the object interaction dialog
+                        const isEvidence = EVIDENCES.some(e => e.id === obj.id);
+                        DialogManager.showObjectInteraction(obj, isEvidence);
                     }, 300);
                 }
             } else {
@@ -533,6 +540,15 @@ const Player = {
         const dx = p1.x - p2.x;
         const dy = p1.y - p2.y;
         return Math.sqrt(dx * dx + dy * dy);
+    },
+
+    // Toggle minimap visibility
+    toggleMinimap() {
+        const minimapContainer = document.getElementById('minimap-container');
+        if (minimapContainer) {
+            minimapContainer.classList.toggle('hidden');
+            AudioManager.playInteractionSound();
+        }
     },
 
     // Mover jugador a posición específica

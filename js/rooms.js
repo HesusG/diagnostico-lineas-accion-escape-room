@@ -348,7 +348,7 @@ const RoomManager = {
 
     // Marcar objeto como recolectado
     markObjectCollected(objectId) {
-        const element = document.getElementById(`object-${objectId}`);
+        const element = document.getElementById(`obj-${objectId}`);
         if (element) {
             element.classList.add('collected');
             // Animación de desaparición

@@ -634,22 +634,78 @@ kbd {
     color: #ffc107;
 }
 
-/* Minimap */
+/* Minimap - Posicionado en esquina superior izquierda */
 #minimap-container {
     position: absolute;
-    top: 80px;
-    right: 20px;
-    bottom: auto;
-    left: auto;
-    transform: none;
-    width: 120px;
-    height: 100px;
-    background: #000;
-    border: 3px solid #4ecca3;
+    top: 20px;
+    left: 20px;
+    width: 140px;
+    height: 110px;
+    background: rgba(0, 0, 0, 0.6);
+    /* Más transparente */
+    border: 2px solid rgba(78, 204, 163, 0.8);
     z-index: 1000;
-    opacity: 0.9;
-    box-shadow: 3px 3px 0px #000;
+    opacity: 0.8;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    /* Permitir interacción con el botón */
+}
+
+#minimap-container:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+#minimap-container.minimized {
+    height: 30px;
+    width: 80px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(78, 204, 163, 0.5);
+}
+
+#minimap-container.minimized #minimap,
+#minimap-container.minimized #minimap-label {
+    opacity: 0;
     pointer-events: none;
+}
+
+#minimap-toggle {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background: #4ecca3;
+    color: #000;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    font-family: monospace;
+    font-size: 16px;
+    box-shadow: 2px 2px 0px #000;
+    transition: transform 0.2s;
+}
+
+#minimap-toggle:hover {
+    transform: scale(1.1);
+}
+
+#minimap-container.minimized #minimap-toggle {
+    top: 2px;
+    right: 2px;
+    content: '+';
+    /* Esto no funciona en input/button, se cambiará por JS */
+}
+
+#minimap-container.hidden {
+    display: none;
 }
 
 #minimap {
@@ -664,14 +720,17 @@ kbd {
 
 #minimap-label {
     position: absolute;
-    bottom: -20px;
+    top: -22px;
+    left: 0;
     width: 100%;
     text-align: center;
     font-family: 'Press Start 2P', cursive;
     font-size: 0.5rem;
     color: #4ecca3;
     background: #000;
-    padding: 2px 0;
+    padding: 3px 0;
+    border: 2px solid #4ecca3;
+    border-bottom: none;
 }
 
 .minimap-room {
